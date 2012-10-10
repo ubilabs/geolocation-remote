@@ -1,0 +1,9 @@
+{
+  "name": "navigator-remote",
+  "description": "Navigator GeoLocation Remote Control",
+  "version": "0.1.0",
+  "dependencies": {
+    "socket.io": "*"
+  },
+  "engine": "node >= 0.6.0"
+}
