@@ -1,8 +1,7 @@
-# Geolocation Remote - Control the Location of Your Mobile Device
+# Geolocation Remote 
+### Control the Location of Your Mobile Device
 
-It is hard to test mobile applications where the location changes freequently. 
-
-This tool lets you take over control of your `navigator.geolocation` by overriding the existing APIs using data from a simple socket connection.
+It is hard to test mobile applications where the location changes freequently. This tool lets you take over control of your `navigator.geolocation` by overriding the existing APIs using data from a simple socket connection.
 
 ## Installation
 
