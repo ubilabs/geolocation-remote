@@ -1,9 +1,8 @@
-
 (function(){
 
   var position = new google.maps.LatLng(-25.363882,131.044922);
 
-  var map = new google.maps.Map(document.getElementById('map_canvas'), {
+  var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 4,
     center: position,
     mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -33,4 +32,5 @@
       position.coords.longitude
     ));
   });
+  
 })();
