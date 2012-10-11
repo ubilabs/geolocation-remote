@@ -15,6 +15,14 @@ function geolocationRemote(socketUrl){
     updateWatchers();
   });
 
+  socket.on("error", function(){
+    alert("Could not connect to socket at " + socketUrl);
+  });
+
+  socket.on("disconnect", function(){
+    alert("Socket disconnected");
+  });
+
   // Send an update to all connected clients.
   function updatePosition (coords){
     socket.emit("update", coords);
