@@ -12,7 +12,7 @@ It is hard to test mobile applications where the location changes freequently. T
 
 ## Run the Example
 
-1. Open the _example/index.html_ on you mobile phone.
+1. Open the _examples/simple/index.html_ on you mobile phone.
 2. Open the same document in your desktop browser.
 3. Drag the marker around and see it synced to your mobile.
 
