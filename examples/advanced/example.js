@@ -7,6 +7,7 @@ $(document).ready(function() {
 
   remote.map.init();
   remote.controls.init();
+  remote.route.init();
 });
 
 
@@ -21,40 +22,72 @@ remote.map = (function() {
       mapTypeId: google.maps.MapTypeId.ROADMAP
     }),
     geolocation = geolocationRemote("http://localhost:8888"),
-    marker = {
-      car: new google.maps.Marker({
-        position: startPosition,
-        map: map,
-        draggable: true
-      })
-    },
-    route = {},
-    driving = {},
-    directionsService = new google.maps.DirectionsService(),
-    directionsDisplay = new google.maps.DirectionsRenderer({
+    marker = new google.maps.Marker({
+      position: startPosition,
+      map: map,
       draggable: true
+    }),
+    directionsDisplay = new google.maps.DirectionsRenderer({
+      draggable: true,
+      map: map
     });
 
-  directionsDisplay.setMap(map);
-
-  function initEvents() {
-    google.maps.event.addListener(marker.car, "drag", function(event){
+  function init() {
+    google.maps.event.addListener(marker, "drag", function(event){
       var position = event.latLng;
 
-      geolocation.updatePosition({
-        latitude: position.lat(),
-        longitude: position.lng(),
-        accuracy: 10
-      });
+      updateGeolocation(position);
     });
 
     geolocation.watchPosition(function(position){
-      marker.car.setPosition(new google.maps.LatLng(
+      marker.setPosition(new google.maps.LatLng(
         position.coords.latitude,
         position.coords.longitude
       ));
     });
 
+    remote.$doc.on('marker:update', updateMarker);
+    remote.$doc.on('route:update', updateRoute);
+  }
+
+  function updateGeolocation(position) {
+    geolocation.updatePosition({
+      latitude: position.lat(),
+      longitude: position.lng(),
+      accuracy: 10
+    });
+  }
+
+  function updateMarker(event, position) {
+    marker.setPosition(position);
+    updateGeolocation(position);
+  }
+
+  function updateRoute(event, route) {
+    directionsDisplay.setDirections(route);
+  }
+
+  return {
+    init: init,
+    map: map,
+
+    getMarkerPosition: function() {
+      return marker.getPosition();
+    }
+  };
+})();
+
+
+/**
+ * The routes
+ */
+remote.route = (function() {
+  var route = {},
+    driving = {},
+    distance = {},
+    directionsService = new google.maps.DirectionsService();
+
+  function init() {
     remote.$doc.on('place:changed', function(event, data) {
       updateRoute(data.type, data.place);
     });
@@ -80,7 +113,7 @@ remote.map = (function() {
 
     directionsService.route(request, function(response, status) {
       if (status == google.maps.DirectionsStatus.OK) {
-        directionsDisplay.setDirections(response);
+        remote.$doc.trigger('route:update', response);
         route.details = response.routes[0];
       } else {
         route.details = {};
@@ -91,7 +124,7 @@ remote.map = (function() {
   function startDriving() {
     if (route.from && route.to && route.details.overview_path) {
       calculateStepDistances();
-      marker.car.setPosition(route.from);
+      remote.$doc.trigger('marker:update', route.from);
       driving.time = new Date();
       driving.progress = 0;
 
@@ -139,14 +172,14 @@ remote.map = (function() {
     }
 
     newPosition = getNewPosition(progress, progressDelta);
-    marker.car.setPosition(newPosition);
+    remote.$doc.trigger('marker:update', newPosition);
 
     driving.time = time;
     driving.progress = progress;
   }
 
   function getNewPosition(progress, progressDelta) {
-    var position = marker.car.getPosition(),
+    var position = remote.map.getMarkerPosition(),
       distance = 0,
       previousStep, nextStep, heading, newPosition;
 
@@ -171,13 +204,8 @@ remote.map = (function() {
     return newPosition;
   }
 
-  function init() {
-    initEvents();
-  }
-
   return {
-    init: init,
-    map: map
+    init: init
   };
 })();
 
