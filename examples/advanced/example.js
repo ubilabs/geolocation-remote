@@ -30,6 +30,8 @@ remote.map = (function() {
     directionsDisplay = new google.maps.DirectionsRenderer({
       draggable: true
     });
+    }),
+    drivingInterval;
 
   directionsDisplay.setMap(map);
 
@@ -55,11 +57,8 @@ remote.map = (function() {
       updateRoute(data.type, data.place);
     });
 
-    remote.$doc.on('drive:start', function(event) {
-      marker.car.setPosition(route.from);
-      console.log('START DRIVING!');
-      console.log(route.details);
-    });
+    remote.$doc.on('drive:start', startDriving);
+    remote.$doc.on('drive:stop', stopDriving);
   }
 
   function updateRoute(type, place) {
@@ -85,6 +84,19 @@ remote.map = (function() {
     });
   }
 
+  function startDriving() {
+      drivingInterval = setInterval(drive, 500);
+      remote.$doc.trigger('drive:started');
+  }
+  function stopDriving() {
+    clearInterval(drivingInterval);
+    remote.$doc.trigger('drive:stopped');
+  }
+
+  function drive() {
+    console.log('DRIVING!!');
+  }
+
   function init() {
     initEvents();
   }
@@ -100,7 +112,7 @@ remote.map = (function() {
  * The controls
  */
 remote.controls = (function() {
-  var $controls;
+  var $controls, $driveButton;
 
   function initEvents() {
     $controls.find('.toggle').on('click', function(event) {
@@ -109,10 +121,22 @@ remote.controls = (function() {
       $controls.toggleClass('hidden');
     });
 
-    $controls.find('#drive').on('click', function(event) {
+    $driveButton.on('click', function(event) {
       event.preventDefault();
 
-      remote.$doc.trigger('drive:start');
+      if ($driveButton.hasClass('cancel')) {
+        remote.$doc.trigger('drive:stop');
+      } else {
+        remote.$doc.trigger('drive:start');
+      }
+    });
+
+    remote.$doc.on('drive:started', function() {
+      $driveButton.html('Stop driving').addClass('cancel');
+    });
+
+    remote.$doc.on('drive:stopped', function() {
+      $driveButton.html('Drive').removeClass('cancel');
     });
   }
 
@@ -132,6 +156,7 @@ remote.controls = (function() {
 
   function init() {
     $controls = $('#controls');
+    $driveButton = $controls.find('#drive');
 
     initEvents();
     initAutocomplete('from');

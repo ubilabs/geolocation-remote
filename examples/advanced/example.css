@@ -90,7 +90,6 @@ html, body, #map {
   background-color: #64A8A6;
   font-family: inherit;
   font-size: inherit;
-  font-weight: 700;
   display: block;
   padding: 4px;
   border: 1px solid #3D7270;
@@ -114,4 +113,18 @@ html, body, #map {
   box-shadow: 1px 1px 1px #4E8381;
   top: 5px;
   left: 5px;
+}
+
+#controls .button.cancel {
+  background-color: #E65440;
+  border-color: #A53C2E;
+  -webkit-box-shadow: 1px 1px 1px #B24132, 2px 2px 1px #B24132, 3px 3px 1px #B24132, 4px 4px 1px #B24132, 5px 5px 1px #B24132, 6px 6px 1px #B24132;
+  -moz-box-shadow: 1px 1px 1px #B24132, 2px 2px 1px #B24132, 3px 3px 1px #B24132, 4px 4px 1px #B24132, 5px 5px 1px #B24132, 6px 6px 1px #B24132;
+  box-shadow: 1px 1px 1px #B24132, 2px 2px 1px #B24132, 3px 3px 1px #B24132, 4px 4px 1px #B24132, 5px 5px 1px #B24132, 6px 6px 1px #B24132;
+}
+
+#controls .button.cancel:active {
+  -webkit-box-shadow: 1px 1px 1px #B24132;
+  -moz-box-shadow: 1px 1px 1px #B24132;
+  box-shadow: 1px 1px 1px #B24132;
 }
