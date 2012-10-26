@@ -29,7 +29,6 @@ remote.map = (function() {
     directionsService = new google.maps.DirectionsService(),
     directionsDisplay = new google.maps.DirectionsRenderer({
       draggable: true
-    });
     }),
     drivingInterval;
 
@@ -80,17 +79,46 @@ remote.map = (function() {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
         route.details = response.routes[0];
+      } else {
+        route.details = {};
       }
     });
   }
 
   function startDriving() {
+    if (route.from && route.to && route.details.overview_path) {
+      calculateStepDistances();
+      marker.car.setPosition(route.from);
+
       drivingInterval = setInterval(drive, 500);
       remote.$doc.trigger('drive:started');
+    }
   }
+
   function stopDriving() {
     clearInterval(drivingInterval);
     remote.$doc.trigger('drive:stopped');
+  }
+
+  function calculateStepDistances() {
+    var previous, previousPosition;
+
+    route.distance = {
+      steps: {},
+      total: 0
+    };
+
+    $.each(route.details.overview_path, function(i, position) {
+      previous = ((i - 1) < 0) ? 0 : i - 1;
+      previousPosition = route.details.overview_path[previous];
+
+      route.distance.steps[i] = google.maps.geometry.spherical.computeDistanceBetween(
+        position,
+        previousPosition
+      );
+
+      route.distance.total = route.distance.total + route.distance.steps[i];
+    });
   }
 
   function drive() {
