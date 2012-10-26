@@ -1,0 +1,81 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body, #map {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font: 16px/19px Helvetica, Arial, sans-serif;
+}
+
+#controls {
+  background-color: #fafafa;
+  border-right: 2px solid #ddd;
+  color: #555;
+
+  padding: 1em;
+  overflow: hidden;
+
+  position: relative;
+  height: 100%;
+  width: 17em;
+  float: left;
+
+  -webkit-transition: width 0.4s ease-out;
+  -moz-transition: width 0.4s ease-out;
+  -ms-transition: width 0.4s ease-out;
+  -o-transition: width 0.4s ease-out;
+  transition: width 0.4s ease-out;
+}
+
+#controls.hidden {
+  width: 0px;
+}
+
+#controls .toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+
+  height: 0;
+  width: 0;
+
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #ddd;
+  border-left: none;
+}
+
+#controls .toggle:hover {
+  border-right-color: #555;
+}
+
+#controls.hidden .toggle {
+  border-left: 20px solid #ddd;
+  border-right: none;
+}
+
+#controls.hidden .toggle:hover {
+  border-left-color: #555;
+}
+
+#controls header {
+  border-bottom: 1px solid #ddd;
+  font-family: Georgia, serif;
+  font-size: 1.5em;
+  line-height: 1.5em;
+}
+
+#controls section {
+  margin-top: 1em;
+}
+
+
+
+#controls input {
+  padding: 0.3em;
+  margin-top: 1em;
+  font-size: inherit;
+  width: 100%;
+}

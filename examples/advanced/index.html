@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geolocation Remote Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../examples/advanced/example.css">
+  </head>
+  <body>
+    <section id="controls" class="hiidden">
+      <a href="#toggle" class="toggle"></a>
+      <header>
+        <h1>Geolocation Remote</h1>
+      </header>
+      <section class="route">
+        <header>Route</header>
+        <input type="text" placeholder="from" id="from" />
+        <input type="text" placeholder="to" id="to" />
+      </section>
+    </section>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+    <script src="../js/socket.io.min.js"></script>
+    <script src="../js/geolocation-remote.js"></script>
+
+    <script src="../examples/advanced/example.js"></script>
+  </body>
+</html>
