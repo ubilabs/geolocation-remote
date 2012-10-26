@@ -2,6 +2,9 @@ var remote = {};
 
 $(document).ready(function() {
   remote.$doc = $(document);
+
+  remote.SPEED = 50; // km/h
+
   remote.map.init();
   remote.controls.init();
 });
@@ -11,26 +14,26 @@ $(document).ready(function() {
  * The map
  */
 remote.map = (function() {
-  var position = new google.maps.LatLng(-25.363882, 131.044922),
+  var startPosition = new google.maps.LatLng(-25.363882, 131.044922),
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 4,
-      center: position,
+      center: startPosition,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     }),
     geolocation = geolocationRemote("http://localhost:8888"),
     marker = {
       car: new google.maps.Marker({
-        position: position,
+        position: startPosition,
         map: map,
         draggable: true
       })
     },
     route = {},
+    driving = {},
     directionsService = new google.maps.DirectionsService(),
     directionsDisplay = new google.maps.DirectionsRenderer({
       draggable: true
-    }),
-    drivingInterval;
+    });
 
   directionsDisplay.setMap(map);
 
@@ -89,14 +92,16 @@ remote.map = (function() {
     if (route.from && route.to && route.details.overview_path) {
       calculateStepDistances();
       marker.car.setPosition(route.from);
+      driving.time = new Date();
+      driving.progress = 0;
 
-      drivingInterval = setInterval(drive, 500);
+      driving.interval = setInterval(drive, 500);
       remote.$doc.trigger('drive:started');
     }
   }
 
   function stopDriving() {
-    clearInterval(drivingInterval);
+    clearInterval(driving.interval);
     remote.$doc.trigger('drive:stopped');
   }
 
@@ -122,7 +127,48 @@ remote.map = (function() {
   }
 
   function drive() {
-    console.log('DRIVING!!');
+    var time = new Date(),
+      timeDelta = time - driving.time,
+      progressDelta = remote.SPEED / (60 * 60 * 1000) * timeDelta * 1000,
+      progress = driving.progress + progressDelta,
+      newPosition;
+
+    if (progress > route.distance.total) {
+      stopDriving();
+      return;
+    }
+
+    newPosition = getNewPosition(progress, progressDelta);
+    marker.car.setPosition(newPosition);
+
+    driving.time = time;
+    driving.progress = progress;
+  }
+
+  function getNewPosition(progress, progressDelta) {
+    var position = marker.car.getPosition(),
+      distance = 0,
+      previousStep, nextStep, heading, newPosition;
+
+    $.each(route.distance.steps, function(i, step) {
+      distance = distance + step;
+      i = parseInt(i, 10);
+
+      if (progress < distance) {
+        nextStep = route.details.overview_path[i];
+        previousStep = route.details.overview_path[i - 1];
+        return false;
+      }
+    });
+
+    heading = google.maps.geometry.spherical.computeHeading(previousStep, nextStep);
+    newPosition = google.maps.geometry.spherical.computeOffset(
+      position,
+      progressDelta,
+      heading
+    );
+
+    return newPosition;
   }
 
   function init() {
