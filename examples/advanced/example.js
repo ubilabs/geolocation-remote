@@ -23,14 +23,13 @@ remote.map = (function() {
         position: position,
         map: map,
         draggable: true
-      }),
-      route: {
-        from: false,
-        to: false
-      }
+      })
     },
+    route = {},
     directionsService = new google.maps.DirectionsService(),
-    directionsDisplay = new google.maps.DirectionsRenderer();
+    directionsDisplay = new google.maps.DirectionsRenderer({
+      draggable: true
+    });
 
   directionsDisplay.setMap(map);
 
@@ -52,36 +51,36 @@ remote.map = (function() {
       ));
     });
 
-    remote.$doc.on('place_changed', function(event, data) {
-      updateRouteMarker(data.type, data.place);
+    remote.$doc.on('place:changed', function(event, data) {
+      updateRoute(data.type, data.place);
+    });
+
+    remote.$doc.on('drive:start', function(event) {
+      marker.car.setPosition(route.from);
+      console.log('START DRIVING!');
+      console.log(route.details);
     });
   }
 
-  function updateRouteMarker(type, place) {
-    if (!marker.route[type]) {
-      marker.route[type] = new google.maps.Marker({
-        map: map,
-        draggable: true
-      });
-    }
+  function updateRoute(type, place) {
+    route[type] = place.geometry.location;
 
-    marker.route[type].setPosition(place.geometry.location);
-
-    if (marker.route.from && marker.route.to) {
-      updateRoute();
+    if (route.from && route.to) {
+      loadRoute();
     }
   }
 
-  function updateRoute() {
+  function loadRoute() {
     var request = {
-      origin: marker.route.from.getPosition(),
-      destination: marker.route.to.getPosition(),
+      origin: route.from,
+      destination: route.to,
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
 
     directionsService.route(request, function(response, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
+        route.details = response.routes[0];
       }
     });
   }
@@ -109,6 +108,12 @@ remote.controls = (function() {
 
       $controls.toggleClass('hidden');
     });
+
+    $controls.find('#drive').on('click', function(event) {
+      event.preventDefault();
+
+      remote.$doc.trigger('drive:start');
+    });
   }
 
   function initAutocomplete(elemId) {
@@ -118,7 +123,7 @@ remote.controls = (function() {
     autocomplete.bindTo('bounds', remote.map.map);
 
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
-      remote.$doc.trigger('place_changed', {
+      remote.$doc.trigger('place:changed', {
         type: elemId,
         place: autocomplete.getPlace()
       });

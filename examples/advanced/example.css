@@ -74,8 +74,44 @@ html, body, #map {
 
 
 #controls input {
+  background: #fff;
+  border: 1px solid #ddd;
   padding: 0.3em;
   margin-top: 1em;
+  font-family: inherit;
   font-size: inherit;
   width: 100%;
+}
+
+#controls .button {
+  position: relative;
+  color: #fff;
+  text-decoration: none;
+  background-color: #64A8A6;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  display: block;
+  padding: 4px;
+  border: 1px solid #3D7270;
+  -webkit-box-shadow: 1px 1px 1px #4E8381, 2px 2px 1px #4E8381, 3px 3px 1px #4E8381, 4px 4px 1px #4E8381, 5px 5px 1px #4E8381, 6px 6px 1px #4E8381;
+  -moz-box-shadow: 1px 1px 1px #4E8381, 2px 2px 1px #4E8381, 3px 3px 1px #4E8381, 4px 4px 1px #4E8381, 5px 5px 1px #4E8381, 6px 6px 1px #4E8381;
+  box-shadow: 1px 1px 1px #4E8381, 2px 2px 1px #4E8381, 3px 3px 1px #4E8381, 4px 4px 1px #4E8381, 5px 5px 1px #4E8381, 6px 6px 1px #4E8381;
+  margin: 1em auto;
+  width: 70%;
+  text-align: center;
+  
+  -webkit-transition: all .1s ease;
+  -moz-transition: all .1s ease;
+  -ms-transition: all .1s ease;
+  -o-transition: all .1s ease;
+  transition: all .1s ease;
+}
+
+#controls .button:active {
+  -webkit-box-shadow: 1px 1px 1px #4E8381;
+  -moz-box-shadow: 1px 1px 1px #4E8381;
+  box-shadow: 1px 1px 1px #4E8381;
+  top: 5px;
+  left: 5px;
 }
