@@ -3,8 +3,6 @@ var remote = {};
 $(document).ready(function() {
   remote.$doc = $(document);
 
-  remote.SPEED = 50; // km/h
-
   remote.map.init();
   remote.controls.init();
   remote.route.init();
@@ -87,7 +85,9 @@ remote.map = (function() {
  */
 remote.route = (function() {
   var route = {},
-    driving = {},
+    driving = {
+      speed: 80
+    },
     directionsService = new google.maps.DirectionsService();
 
   function init() {
@@ -101,6 +101,7 @@ remote.route = (function() {
       }
     });
 
+    remote.$doc.on('drive:reset', resetDriving);
     remote.$doc.on('drive:start', startDriving);
     remote.$doc.on('drive:stop', stopDriving);
   }
@@ -143,9 +144,9 @@ remote.route = (function() {
   }
 
   function startDriving() {
-    if (route.details.overview_path) {
+    if (route.details && route.details.overview_path) {
       driving.time = new Date();
-      
+
       clearInterval(driving.interval);
       driving.interval = setInterval(drive, 500);
       remote.$doc.trigger('drive:started');
@@ -181,7 +182,7 @@ remote.route = (function() {
   function drive() {
     var time = new Date(),
       timeDelta = time - driving.time,
-      progressDelta = remote.SPEED / (60 * 60 * 1000) * timeDelta * 1000,
+      progressDelta = driving.speed / (60 * 60 * 1000) * timeDelta * 1000,
       oldProgress = driving.progress,
       newProgress = oldProgress + progressDelta,
       newPosition;
@@ -242,7 +243,7 @@ remote.route = (function() {
  * The controls
  */
 remote.controls = (function() {
-  var $controls, $driveButton;
+  var $controls, $driveButton, $resetButton;
 
   function initEvents() {
     $controls.find('.toggle').on('click', function(event) {
@@ -261,12 +262,18 @@ remote.controls = (function() {
       }
     });
 
+    $resetButton.on('click', function(event) {
+      event.preventDefault();
+
+      remote.$doc.trigger('drive:reset');
+    });
+
     remote.$doc.on('drive:started', function() {
-      $driveButton.html('Stop driving').addClass('cancel');
+      $driveButton.removeClass().addClass('button cancel icon-pause');
     });
 
     remote.$doc.on('drive:stopped', function() {
-      $driveButton.html('Drive').removeClass('cancel');
+      $driveButton.removeClass().addClass('button icon-play');
     });
   }
 
@@ -287,6 +294,7 @@ remote.controls = (function() {
   function init() {
     $controls = $('#controls');
     $driveButton = $controls.find('#drive');
+    $resetButton = $controls.find('#reset');
 
     initEvents();
     initAutocomplete('from');

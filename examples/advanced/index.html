@@ -4,6 +4,7 @@
     <title>Geolocation Remote Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../examples/advanced/example.css">
   </head>
   <body>
@@ -16,7 +17,10 @@
         <header>Route</header>
         <input type="text" placeholder="from" id="from" />
         <input type="text" placeholder="to" id="to" />
-        <a href="#" id="drive" class="button">Drive</a>
+        <div class="buttons">
+          <a href="#" id="reset" class="button icon-step-backward"></a>
+          <a href="#" id="drive" class="button icon-play"></a>
+        </div>
       </section>
     </section>
     <div id="map"></div>

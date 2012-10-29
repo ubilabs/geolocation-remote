@@ -83,6 +83,11 @@ html, body, #map {
   width: 100%;
 }
 
+#controls .buttons {
+  margin: 1em auto;
+  text-align: center;
+}
+
 #controls .button {
   position: relative;
   color: #fff;
@@ -90,14 +95,14 @@ html, body, #map {
   background-color: #64A8A6;
   font-family: inherit;
   font-size: inherit;
-  display: block;
-  padding: 4px;
+  display: inline-block;
+  padding: 8px 4px 4px 4px;
   border: 1px solid #3D7270;
   -webkit-box-shadow: 1px 1px 1px #4E8381, 2px 2px 1px #4E8381, 3px 3px 1px #4E8381, 4px 4px 1px #4E8381, 5px 5px 1px #4E8381, 6px 6px 1px #4E8381;
   -moz-box-shadow: 1px 1px 1px #4E8381, 2px 2px 1px #4E8381, 3px 3px 1px #4E8381, 4px 4px 1px #4E8381, 5px 5px 1px #4E8381, 6px 6px 1px #4E8381;
   box-shadow: 1px 1px 1px #4E8381, 2px 2px 1px #4E8381, 3px 3px 1px #4E8381, 4px 4px 1px #4E8381, 5px 5px 1px #4E8381, 6px 6px 1px #4E8381;
-  margin: 1em auto;
-  width: 70%;
+  margin-right: 1em;
+  width: 20%;
   text-align: center;
   
   -webkit-transition: all .1s ease;
