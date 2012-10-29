@@ -109,6 +109,10 @@ remote.route = (function() {
       updateSpeed(speed);
     });
 
+    remote.$doc.on('accuracy:changed', function(event, accuracy) {
+      updateAccuracy(accuracy);
+    });
+
     remote.$doc.on('drive:reset', resetDriving);
     remote.$doc.on('drive:start', startDriving);
     remote.$doc.on('drive:stop', stopDriving);
@@ -150,6 +154,10 @@ remote.route = (function() {
 
   function updateSpeed(speed) {
     driving.speed = speed;
+  }
+
+  function updateAccuracy(accuracy) {
+    driving.accuracy = accuracy;
   }
 
   function resetDriving() {
@@ -236,6 +244,10 @@ remote.route = (function() {
 
     newPosition = calculatePosition(progressFromPrevious, previousStep, nextStep);
 
+    if (driving.accuracy) {
+      newPosition = applyAccuracy(newPosition);
+    }
+
     return newPosition;
   }
 
@@ -244,6 +256,19 @@ remote.route = (function() {
       position = google.maps.geometry.spherical.computeOffset(
         previousStep,
         progressFromPrevious,
+        heading
+      );
+
+    return position;
+  }
+
+  function applyAccuracy(position) {
+    var heading = (Math.random() * 360) - 180,
+      distance = Math.random() * driving.accuracy;
+
+      position = google.maps.geometry.spherical.computeOffset(
+        position,
+        distance,
         heading
       );
 
@@ -260,7 +285,9 @@ remote.route = (function() {
  * The controls
  */
 remote.controls = (function() {
-  var $controls, $driveButton, $resetButton, $speedDisplay, $speedSlider;
+  var $controls, $driveButton, $resetButton,
+    $speedDisplay, $speedSlider,
+    $accuracyDisplay, $accuracySlider;
 
   function initEvents() {
     $controls.find('.toggle').on('click', function(event) {
@@ -270,6 +297,8 @@ remote.controls = (function() {
     });
 
     $speedSlider.on('change', updateSpeed);
+
+    $accuracySlider.on('change', updateAccuracy);
 
     $driveButton.on('click', function(event) {
       event.preventDefault();
@@ -303,6 +332,13 @@ remote.controls = (function() {
     remote.$doc.trigger('speed:changed', speed);
   }
 
+  function updateAccuracy() {
+    var accuracy = $accuracySlider.val();
+
+    $accuracyDisplay.html(accuracy);
+    remote.$doc.trigger('accuracy:changed', accuracy);
+  }
+
   function initAutocomplete(elemId) {
     var input = document.getElementById(elemId),
       autocomplete = new google.maps.places.Autocomplete(input);
@@ -323,8 +359,11 @@ remote.controls = (function() {
     $resetButton = $controls.find('#reset');
     $speedDisplay = $controls.find('#speed-display span');
     $speedSlider = $controls.find('#speed');
+    $accuracyDisplay = $controls.find('#accuracy-display span');
+    $accuracySlider = $controls.find('#accuracy');
 
     updateSpeed();
+    updateAccuracy();
 
     initEvents();
     initAutocomplete('from');
