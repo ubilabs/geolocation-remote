@@ -84,7 +84,6 @@ remote.map = (function() {
 remote.route = (function() {
   var route = {},
     driving = {},
-    distance = {},
     directionsService = new google.maps.DirectionsService();
 
   function init() {
@@ -124,7 +123,7 @@ remote.route = (function() {
   function startDriving() {
     if (route.from && route.to && route.details.overview_path) {
       calculateStepDistances();
-      remote.$doc.trigger('marker:update', route.from);
+      remote.$doc.trigger('marker:update', route.details.overview_path[0]);
       driving.time = new Date();
       driving.progress = 0;
 
@@ -142,7 +141,7 @@ remote.route = (function() {
     var previous, previousPosition;
 
     route.distance = {
-      steps: {},
+      steps: [],
       total: 0
     };
 
@@ -163,45 +162,54 @@ remote.route = (function() {
     var time = new Date(),
       timeDelta = time - driving.time,
       progressDelta = remote.SPEED / (60 * 60 * 1000) * timeDelta * 1000,
-      progress = driving.progress + progressDelta,
+      oldProgress = driving.progress,
+      newProgress = oldProgress + progressDelta,
       newPosition;
 
-    if (progress > route.distance.total) {
+    if (newProgress > route.distance.total) {
+      newProgress = route.distance.total;
       stopDriving();
-      return;
     }
 
-    newPosition = getNewPosition(progress, progressDelta);
+    newPosition = getNewPosition(newProgress);
     remote.$doc.trigger('marker:update', newPosition);
 
     driving.time = time;
-    driving.progress = progress;
+    driving.progress = newProgress;
   }
 
-  function getNewPosition(progress, progressDelta) {
-    var position = remote.map.getMarkerPosition(),
-      distance = 0,
-      previousStep, nextStep, heading, newPosition;
+  function getNewPosition(newProgress) {
+    var distance = 0,
+      previousStep, nextStep, previousStepProgress, progressFromPrevious, newPosition;
 
     $.each(route.distance.steps, function(i, step) {
       distance = distance + step;
       i = parseInt(i, 10);
 
-      if (progress < distance) {
+      if (newProgress <= distance) {
         nextStep = route.details.overview_path[i];
         previousStep = route.details.overview_path[i - 1];
+        previousStepProgress = distance - step;
+        progressFromPrevious = newProgress - previousStepProgress;
+
         return false;
       }
     });
 
-    heading = google.maps.geometry.spherical.computeHeading(previousStep, nextStep);
-    newPosition = google.maps.geometry.spherical.computeOffset(
-      position,
-      progressDelta,
-      heading
-    );
+    newPosition = calculatePosition(progressFromPrevious, previousStep, nextStep);
 
     return newPosition;
+  }
+
+  function calculatePosition(progressFromPrevious, previousStep, nextStep) {
+    var heading = google.maps.geometry.spherical.computeHeading(previousStep, nextStep),
+      position = google.maps.geometry.spherical.computeOffset(
+        previousStep,
+        progressFromPrevious,
+        heading
+      );
+
+    return position;
   }
 
   return {
