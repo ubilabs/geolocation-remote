@@ -14,23 +14,23 @@ html, body, #map {
   border-right: 2px solid #ddd;
   color: #555;
 
-  padding: 1em;
+  padding: 1em 2em;
   overflow: hidden;
 
   position: relative;
   height: 100%;
-  width: 17em;
+  width: 19em;
   float: left;
 
-  -webkit-transition: width 0.4s ease-out;
-  -moz-transition: width 0.4s ease-out;
-  -ms-transition: width 0.4s ease-out;
-  -o-transition: width 0.4s ease-out;
-  transition: width 0.4s ease-out;
+  -webkit-transition: margin 0.4s ease-out;
+  -moz-transition: margin 0.4s ease-out;
+  -ms-transition: margin 0.4s ease-out;
+  -o-transition: margin 0.4s ease-out;
+  transition: margin 0.4s ease-out;
 }
 
 #controls.hidden {
-  width: 0px;
+  margin-left: -17em;
 }
 
 #controls .toggle {
