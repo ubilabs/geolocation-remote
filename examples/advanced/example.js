@@ -4,8 +4,8 @@ $(document).ready(function() {
   remote.$doc = $(document);
 
   remote.map.init();
-  remote.controls.init();
   remote.route.init();
+  remote.controls.init();
 });
 
 
@@ -85,9 +85,7 @@ remote.map = (function() {
  */
 remote.route = (function() {
   var route = {},
-    driving = {
-      speed: 80
-    },
+    driving = {},
     directionsService = new google.maps.DirectionsService();
 
   function init() {
@@ -99,6 +97,10 @@ remote.route = (function() {
       if (data.directions && data.directions.routes && data.directions.routes.length) {
         updateRoute(data.directions.routes[0]);
       }
+    });
+
+    remote.$doc.on('speed:changed', function(event, speed) {
+      updateSpeed(speed);
     });
 
     remote.$doc.on('drive:reset', resetDriving);
@@ -138,8 +140,15 @@ remote.route = (function() {
     calculateStepDistances();
   }
 
+  function updateSpeed(speed) {
+    driving.speed = speed;
+  }
+
   function resetDriving() {
-    remote.$doc.trigger('marker:update', route.details.overview_path[0]);
+    if (route.details && route.details.overview_path) {
+      remote.$doc.trigger('marker:update', route.details.overview_path[0]);
+    }
+
     driving.progress = 0;
   }
 
@@ -243,7 +252,7 @@ remote.route = (function() {
  * The controls
  */
 remote.controls = (function() {
-  var $controls, $driveButton, $resetButton;
+  var $controls, $driveButton, $resetButton, $speedDisplay, $speedSlider;
 
   function initEvents() {
     $controls.find('.toggle').on('click', function(event) {
@@ -251,6 +260,8 @@ remote.controls = (function() {
 
       $controls.toggleClass('hidden');
     });
+
+    $speedSlider.on('change', updateSpeed);
 
     $driveButton.on('click', function(event) {
       event.preventDefault();
@@ -277,6 +288,13 @@ remote.controls = (function() {
     });
   }
 
+  function updateSpeed() {
+    var speed = $speedSlider.val();
+
+    $speedDisplay.html(speed);
+    remote.$doc.trigger('speed:changed', speed);
+  }
+
   function initAutocomplete(elemId) {
     var input = document.getElementById(elemId),
       autocomplete = new google.maps.places.Autocomplete(input);
@@ -295,6 +313,10 @@ remote.controls = (function() {
     $controls = $('#controls');
     $driveButton = $controls.find('#drive');
     $resetButton = $controls.find('#reset');
+    $speedDisplay = $controls.find('#speed-display span');
+    $speedSlider = $controls.find('#speed');
+
+    updateSpeed();
 
     initEvents();
     initAutocomplete('from');
