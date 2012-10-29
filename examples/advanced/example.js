@@ -48,6 +48,7 @@ remote.map = (function() {
       ));
     });
 
+    remote.$doc.on('map:center', updateCenter);
     remote.$doc.on('marker:update', updateMarker);
     remote.$doc.on('route:update', updateRoute);
   }
@@ -58,6 +59,11 @@ remote.map = (function() {
       longitude: position.lng(),
       accuracy: 10
     });
+  }
+
+  function updateCenter(event, place) {
+    map.setCenter(place.geometry.location);
+    map.setZoom(14);
   }
 
   function updateMarker(event, position) {
@@ -113,6 +119,8 @@ remote.route = (function() {
 
     if (route.from && route.to) {
       loadRoute();
+    } else {
+      remote.$doc.trigger('map:center', place);
     }
   }
 
