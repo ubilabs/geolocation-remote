@@ -39,6 +39,10 @@ remote.map = (function() {
       updateGeolocation(position);
     });
 
+    google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+      remote.$doc.trigger('route:changed', directionsDisplay);
+    });
+
     geolocation.watchPosition(function(position){
       marker.setPosition(new google.maps.LatLng(
         position.coords.latitude,
@@ -88,14 +92,20 @@ remote.route = (function() {
 
   function init() {
     remote.$doc.on('place:changed', function(event, data) {
-      updateRoute(data.type, data.place);
+      updateRoutePlaces(data.type, data.place);
+    });
+
+    remote.$doc.on('route:changed', function(event, data) {
+      if (data.directions && data.directions.routes && data.directions.routes.length) {
+        updateRoute(data.directions.routes[0]);
+      }
     });
 
     remote.$doc.on('drive:start', startDriving);
     remote.$doc.on('drive:stop', stopDriving);
   }
 
-  function updateRoute(type, place) {
+  function updateRoutePlaces(type, place) {
     route[type] = place.geometry.location;
 
     if (route.from && route.to) {
@@ -113,20 +123,30 @@ remote.route = (function() {
     directionsService.route(request, function(response, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         remote.$doc.trigger('route:update', response);
-        route.details = response.routes[0];
+        updateRoute(response.routes[0]);
+        resetDriving();
       } else {
-        route.details = {};
+        updateRoute({});
+        resetDriving();
       }
     });
   }
 
-  function startDriving() {
-    if (route.from && route.to && route.details.overview_path) {
-      calculateStepDistances();
-      remote.$doc.trigger('marker:update', route.details.overview_path[0]);
-      driving.time = new Date();
-      driving.progress = 0;
+  function updateRoute(routeDetails) {
+    route.details = routeDetails;
+    calculateStepDistances();
+  }
 
+  function resetDriving() {
+    remote.$doc.trigger('marker:update', route.details.overview_path[0]);
+    driving.progress = 0;
+  }
+
+  function startDriving() {
+    if (route.details.overview_path) {
+      driving.time = new Date();
+      
+      clearInterval(driving.interval);
       driving.interval = setInterval(drive, 500);
       remote.$doc.trigger('drive:started');
     }
