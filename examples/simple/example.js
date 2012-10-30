@@ -16,6 +16,18 @@
 
   var geolocation = geolocationRemote("http://localhost:8888");
 
+  google.maps.event.addListenerOnce(map, "bounds_changed", setMarkerInBounds);
+  google.maps.event.addListener(marker, "position_changed", setMarkerInBounds);
+
+  function setMarkerInBounds() {
+    var bounds = map.getBounds(),
+      position = marker.getPosition();
+
+    if (bounds && !bounds.contains(position)) {
+      map.setCenter(position);
+    }
+  }
+
   google.maps.event.addListener(marker, "drag", function(event){
     var position = event.latLng;
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geolocation Remote Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../examples/advanced/example.css">
+  </head>
+  <body>
+    <section id="controls">
+      <header>
+        <h1>Geolocation Remote</h1>
+      </header>
+      <section class="route">
+        <header>Route</header>
+        <input type="text" placeholder="from" id="from" />
+        <input type="text" placeholder="to" id="to" />
+        <label for="speed" id="speed-display">Speed (<span></span> km/h)</label>
+        <input type="range" min="0" max="200" value="80" id="speed" />
+        <label for="accuracy" id="accuracy-display">GPS Accuracy (<span></span> m)</label>
+        <input type="range" min="0" max="10" value="3" id="accuracy" />
+        <div class="buttons">
+          <a href="#" id="reset" class="button icon-step-backward"></a>
+          <a href="#" id="drive" class="button icon-play"></a>
+        </div>
+      </section>
+    </section>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry,places"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+    <script src="../js/socket.io.min.js"></script>
+    <script src="../js/geolocation-remote.js"></script>
+
+    <script src="../examples/advanced/example.js"></script>
+  </body>
+</html>
