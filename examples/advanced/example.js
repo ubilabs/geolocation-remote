@@ -141,7 +141,18 @@ remote.route = (function() {
   }
 
   function updateRoute(routeDetails) {
-    route.details = routeDetails;
+    route.path = [];
+
+    $.each(routeDetails.legs, function(i, leg) {
+      $.each(leg.steps, function(k, step) {
+        $.each(step.path, function(l, point) {
+          if (l !== 0 || (i === 0 && k === 0 && l === 0)) {
+            route.path.push(point);
+          }
+        });
+      });
+    });
+
     calculateStepDistances();
   }
 
@@ -154,15 +165,15 @@ remote.route = (function() {
   }
 
   function resetDriving() {
-    if (route.details && route.details.overview_path) {
-      remote.$doc.trigger('marker:update', route.details.overview_path[0]);
+    if (route.path) {
+      remote.$doc.trigger('marker:update', route.path[0]);
     }
 
     driving.progress = 0;
   }
 
   function startDriving() {
-    if (route.details && route.details.overview_path) {
+    if (route.path) {
       driving.time = new Date();
 
       clearInterval(driving.interval);
@@ -184,9 +195,9 @@ remote.route = (function() {
       total: 0
     };
 
-    $.each(route.details.overview_path, function(i, position) {
+    $.each(route.path, function(i, position) {
       previous = ((i - 1) < 0) ? 0 : i - 1;
-      previousPosition = route.details.overview_path[previous];
+      previousPosition = route.path[previous];
 
       route.distance.steps[i] = google.maps.geometry.spherical.computeDistanceBetween(
         position,
@@ -226,8 +237,8 @@ remote.route = (function() {
       i = parseInt(i, 10);
 
       if (newProgress <= distance) {
-        nextStep = route.details.overview_path[i];
-        previousStep = route.details.overview_path[i - 1];
+        nextStep = route.path[i];
+        previousStep = route.path[i - 1];
         previousStepProgress = distance - step;
         progressFromPrevious = newProgress - previousStepProgress;
 
