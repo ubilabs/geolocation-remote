@@ -36,7 +36,7 @@ The `geolocation` object provides the same methods as the default `navigator.geo
 Additionally it provides a `updatePosition` method to update the position on all connected devices:
 
 ```js
-geolocation.updatePosition({latitide: 12, longitude: 23, accuracy: 34 });
+geolocation.updatePosition({latitude: 12, longitude: 23, accuracy: 34 });
 ``` 
 
 
