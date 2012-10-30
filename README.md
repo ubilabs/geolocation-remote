@@ -10,11 +10,20 @@ It is hard to test mobile applications where the location changes freequently. T
 3. Install all dependencies using `npm install`.
 4. Start the socket connection: `node socket.js`.
 
-## Run the Example
+## Run the Examples
+
+### Simple 
 
 1. Open the _examples/simple/index.html_ on you mobile phone.
 2. Open the same document in your desktop browser.
 3. Drag the marker around and see it synced to your mobile.
+
+### Advanced 
+
+1. Open the _examples/simple/index.html_ on you mobile phone.
+2. Open the _examples/advanced/index.html_ in your desktop browser.
+3. Drag the marker around and see it synced to your mobile.
+4. Define a route and click play to see the marker move along the route.
 
 ## Screenshot
 
