@@ -29,37 +29,6 @@ html, body, #map {
   transition: margin 0.4s ease-out;
 }
 
-#controls.hidden {
-  margin-left: -17em;
-}
-
-#controls .toggle {
-  position: absolute;
-  top: 50%;
-  right: 0.5em;
-
-  height: 0;
-  width: 0;
-
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-right: 20px solid #ddd;
-  border-left: none;
-}
-
-#controls .toggle:hover {
-  border-right-color: #555;
-}
-
-#controls.hidden .toggle {
-  border-left: 20px solid #ddd;
-  border-right: none;
-}
-
-#controls.hidden .toggle:hover {
-  border-left-color: #555;
-}
-
 #controls header {
   border-bottom: 1px solid #ddd;
   font-family: Georgia, serif;

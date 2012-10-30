@@ -283,12 +283,6 @@ remote.controls = (function() {
     $accuracyDisplay, $accuracySlider;
 
   function initEvents() {
-    $controls.find('.toggle').on('click', function(event) {
-      event.preventDefault();
-
-      $controls.toggleClass('hidden');
-    });
-
     $speedSlider.on('change', updateSpeed);
 
     $accuracySlider.on('change', updateAccuracy);
