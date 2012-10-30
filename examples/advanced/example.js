@@ -41,13 +41,6 @@ remote.map = (function() {
       remote.$doc.trigger('route:changed', directionsDisplay);
     });
 
-    geolocation.watchPosition(function(position){
-      marker.setPosition(new google.maps.LatLng(
-        position.coords.latitude,
-        position.coords.longitude
-      ));
-    });
-
     remote.$doc.on('map:center', updateCenter);
     remote.$doc.on('marker:update', updateMarker);
     remote.$doc.on('route:update', updateRoute);
