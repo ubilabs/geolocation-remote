@@ -1,0 +1,46 @@
+header
+  nav
+
+#controls
+  header
+    h1 GeoLocation Remote Control
+
+  .webapp
+    input.url(type="text", placeholder="WebApp URL")
+    button(class="set-webapp button") Set
+
+  #route
+    header Route
+    input(type="text", placeholder="from", id="from", class="control-item", disabled)
+    input(type="text", placeholder="to", id="to", class="control-item", disabled)
+    label(for="speed", id="speed-display") Geschwindigkeit (<span></span> km/h)
+
+    input(type="range", min="0", max="200", value="80", id="speed", class="control-item", disabled)
+    label(for="accuracy", id="accuracy-display") GPS Genauigkeit (<span></span>m)</label>
+    input(type="range", min="0", max="1000", value="10", id="accuracy", class="control-item", disabled)
+    div.buttons
+        button(id="reset", class="button control-item") reset
+        button(id="drive", class="button control-item") drive
+
+  #is-online
+    input(type="checkbox", name="onLine", val="true", checked, class="control-item", disabled)
+    label Online
+
+  #gps_error
+    input(type="radio", name="gps[role]", val="-1", class="control-item", disabled)
+    label(for="gps", id="gps-error") GPS Error
+    br
+    input(type="radio", name="gps[role]", val="-1", class="control-item", disabled)
+    label No Error
+    br
+    input(type="radio", name="gps[role]", val="0", class="control-item", disabled)
+    label Unknown Error
+    br
+    input(type="radio", name="gps[role]", val="1", class="control-item", disabled)
+    label Permission denied
+    br
+    input(type="radio", name="gps[role]", val="2", class="control-item", disabled)
+    label No Position
+    br
+    input(type="radio", name="gps[role]", val="3", class="control-item", disabled)
+    label Timeout error
