@@ -22,23 +22,6 @@ module.exports = function (grunt) {
         tmp: '.tmp'
     };
 
-    var io = require('socket.io').listen(8888);
-
-    io.sockets.on('connection', function (socket) {
-      socket.join('room');
-
-      socket.on('update:webapp', function (data) {
-        io.sockets.in('room').emit('update:webapp', data);
-      });
-
-      socket.on('update:remote', function (data) {
-        io.sockets.in('room').emit('update:remote', data);
-      });
-
-    });
-
-    console.log('Sockets: listening on port 8888');
-
     grunt.initConfig({
         folders: folders,
         watch: {
@@ -65,12 +48,11 @@ module.exports = function (grunt) {
                 port: 9999,
                 // change this to '0.0.0.0' to access the server from outside
                 hostname: 'localhost'
-            }
+            },
             livereload: {
                 options: {
                     middleware: function (connect) {
                         return [
-                            lrSnippet,
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, 'app')
                         ];
@@ -315,9 +297,9 @@ module.exports = function (grunt) {
             'clean:server',
             'compass:server',
             'jade',
-            'concurrent:server',
-            'livereload-start',
-            'connect:livereload',
+            // 'concurrent:server',
+            // 'livereload-start',
+            'connect:livereload:keepalive',
             'open',
             'watch'
         ]);
