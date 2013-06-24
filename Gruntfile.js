@@ -236,38 +236,19 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,txt}',
                         '.htaccess',
-                        'images/{,*/}*.{webp,gif}',
-                        'styles/fonts/*'
+                        'images/{,*/}*',
+                        'styles/fonts/*',
+                        'scripts/{,*/}*js',
+                        'bower_components/**/*.js'
                     ]
-                }]
-            },
-            js: {
-                files: [{
+                }, {
                     expand: true,
-                    cwd: '<%= folders.app %>',
-                    dest: '<%= folders.tmp %>',
-                    src: [
-                        'scripts/{,*/}*js'
-                    ]
-                }]
-            },
-            css: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= folders.app %>',
-                    dest: '<%= folders.tmp %>',
-                    src: [
-                        'styles/{,*/}*css'
-                    ]
-                }]
-            },
-            assets: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= folders.app %>',
+                    dot: true,
+                    cwd: '<%= folders.tmp %>',
                     dest: '<%= folders.dist %>',
                     src: [
-                        'assets/{,*/}*.*'
+                        'styles/{,*/}*css',
+                        '*html'
                     ]
                 }]
             }
@@ -297,8 +278,8 @@ module.exports = function (grunt) {
             'clean:server',
             'compass:server',
             'jade',
-            // 'concurrent:server',
-            // 'livereload-start',
+            'concurrent:server',
+            'livereload-start',
             'connect:livereload:keepalive',
             'open',
             'watch'
@@ -315,17 +296,18 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'jade',
-        'copy:js',
-        'copy:css',
-        'useminPrepare',
         'concurrent:dist',
-        'cssmin',
-        'concat',
-        'uglify',
+        // 'copy:js',
+        // 'copy:css',
+        // 'useminPrepare',
+        // 'concurrent:dist',
+        // 'cssmin',
+        // 'concat',
+        // 'uglify',
         'copy:dist',
-        'copy:assets',
-        'rev',
-        'usemin'
+        // 'copy:assets',
+        // 'rev',
+        // 'usemin'
     ]);
 
     grunt.registerTask('default', [
