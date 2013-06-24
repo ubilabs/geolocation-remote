@@ -4,7 +4,7 @@
 
 var remote = {};
 var webapp = {
-  src: ''
+  src: window.location.origin
 };
 
 $(function() {
@@ -56,14 +56,14 @@ $(function() {
     }
   })
 
+  initWebapp(window.location.search);
   initTestEvents();
 
   var $webappControl = $('.webapp'),
     $webappUrlInput = $webappControl.find('.url');
 
   $('.set-webapp').on('click', function (e) {
-    webapp.src = $webappUrlInput.val();
-    initWebapp();
+    initWebapp($webappUrlInput.val());
   })
 
   remote.controls.updateSpeed();
@@ -84,11 +84,22 @@ function updateWebapp (data) {
   remote.socket.emit("update:webapp", data);
 }
 
-function initWebapp () {
+function initWebapp (query) {
+
+  // prevent me from getting framed all over again and again and again ...
+  if (window!=window.top) {
+    /* I'm in a frame! */
+    return;
+  }
+
+
+  var query = /\?/.test(query) ? query : '?' + query
+
+
 
   var src = webapp.src;
 
-  src= (/\?/.test(src)) ? src + '+remote' : src + '?remote';
+  src = query ? src + query + 'remote' : src + '?remote';
 
   src = (/http:\/\//.test(src)) ? src : 'http://' + src;
 
