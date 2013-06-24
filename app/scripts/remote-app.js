@@ -95,12 +95,35 @@ function updateIframe (query) {
   var src = webapp.src;
   var query = /\?/.test(query) ? query : '?' + query
 
-  src = query ? src + query + 'remote' : src + '?remote';
+  src = query ? src + query + '&remote=true' : src + '?remote=true';
   src = (/http:\/\//.test(src)) ? src : 'http://' + src;
 
   $('.webapp .url').val(query);
 
-  $('iframe#webapp').attr({'src': src});
+  $('iframe#webapp').load(function() {
+    console.log('load')
+    injectJavascript();
+  });
+
+  $('iframe#webapp').attr('src', src);
+
+
+}
+
+function injectJavascript () {
+
+  var $iframe = $('iframe#webapp').contents(),
+    $iframeBody = $iframe.find('body');
+
+  var jsLibs = [
+    '../remote/scripts/vendor/socket.io.min.js',
+    '../remote/scripts/remote-geolocation.js',
+    '../remote/scripts/remote-navigator.js'
+  ]
+
+  $.each(jsLibs, function (i, lib) {
+    $('<script src="' + lib + '">').appendTo($iframeBody)
+  })
 }
 
 function initTestEvents() {
