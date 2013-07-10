@@ -12,6 +12,7 @@ var ControlsModel = Model({
     this.$accuracySlider = this.$controls.find('#accuracy');
     this.$gpsError = this.$controls.find('.gps_error select');
     this.$isOnline = this.$controls.find('.is-online input');
+    this.$setSearchQuery = this.$controls.find('.set-webapp');
 
     this.$speedSlider.on('change', this.updateSpeed);
     this.$accuracySlider.on('change', this.updateAccuracy);
@@ -19,6 +20,7 @@ var ControlsModel = Model({
     this.$resetButton.on('click', this.onResetButtonClick);
     this.$gpsError.on('change', this.setGpsError);
     this.$isOnline.on('change', this.setOnline);
+    this.$setSearchQuery.on('click', this.updateSearchQuery);
 
     this.initAutocomplete(remote.map.map, 'from');
     this.initAutocomplete(remote.map.map, 'to');
@@ -44,7 +46,7 @@ var ControlsModel = Model({
     var isOnline = $(event.target).is(':checked');
     remote.onLine = isOnline;
 
-    updateWebapp();
+    this.trigger('control:changed');
   },
 
   setGpsError: function (event) {
@@ -52,7 +54,7 @@ var ControlsModel = Model({
     var errorType = $(event.target).find(":selected").val();
     remote.error = errorType;
 
-    updateWebapp();
+    this.trigger('control:changed');
   },
 
   onDriveButtonClick: function(event) {
@@ -91,7 +93,7 @@ var ControlsModel = Model({
 
     this.$accuracyDisplay.html(accuracy);
     this.trigger('accuracy:changed', {accuracy: accuracy});
-    updateWebapp();
+    this.trigger('accuracy:changed');
   },
 
   initAutocomplete: function(map, elemId) {
@@ -106,5 +108,14 @@ var ControlsModel = Model({
         place: autocomplete.getPlace()
      })
     }, this));
+  },
+  updateSearchQuery: function () {
+    var $webappControl = $('.webapp'),
+    $webappUrlInput = $webappControl.find('.url');
+
+    $('.set-webapp').on('click', function (e) {
+      this.trigger('searchQuery:changed', $webappUrlInput.val());
+    }.bind(this))
   }
+
 });

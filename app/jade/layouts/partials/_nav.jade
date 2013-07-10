@@ -1,36 +1,36 @@
-header
-  nav
+.sidebar
+  #controls
+    header
+      h1 Geolocation Remote Control
 
-#controls
-  header
-    h1 Remote Control
+    .webapp
+      input.url(type="text", placeholder="query string: embed=true")
+      button(class="set-webapp button") Set
 
-  .webapp
-    input.url(type="text", placeholder="query string: embed=true")
-    button(class="set-webapp button") Set
+    #route
+      header Route
+      input(type="text", placeholder="from", id="from", class="control-item", disabled)
+      input(type="text", placeholder="to", id="to", class="control-item", disabled)
+      label(for="speed", id="speed-display") Geschwindigkeit (<span></span> km/h)
 
-  #route
-    header Route
-    input(type="text", placeholder="from", id="from", class="control-item", disabled)
-    input(type="text", placeholder="to", id="to", class="control-item", disabled)
-    label(for="speed", id="speed-display") Geschwindigkeit (<span></span> km/h)
+      input(type="range", min="0", max="200", value="80", id="speed", class="control-item", disabled)
+      label(for="accuracy", id="accuracy-display") GPS Genauigkeit (<span></span>m)</label>
+      input(type="range", min="0", max="1000", value="10", id="accuracy", class="control-item", disabled)
+      div.buttons
+          button(id="reset", class="button control-item") reset
+          button(id="drive", class="button control-item") drive
 
-    input(type="range", min="0", max="200", value="80", id="speed", class="control-item", disabled)
-    label(for="accuracy", id="accuracy-display") GPS Genauigkeit (<span></span>m)</label>
-    input(type="range", min="0", max="1000", value="10", id="accuracy", class="control-item", disabled)
-    div.buttons
-        button(id="reset", class="button control-item") reset
-        button(id="drive", class="button control-item") drive
+    .is-online
+      input(type="checkbox", name="onLine", val="true", checked, class="control-item", disabled)
+      label Online
 
-  .is-online
-    input(type="checkbox", name="onLine", val="true", checked, class="control-item", disabled)
-    label Online
+    .gps_error
 
-  .gps_error
+      select
+          option(value="-1") No Error
+          option(value="0") Unknown Error
+          option(value="2") Permission denied
+          option(value="3") No Position
+          option(value="4") Timeout
 
-    select
-        option(value="-1") No Error
-        option(value="0") Unknown Error
-        option(value="2") Permission denied
-        option(value="3") No Position
-        option(value="4") Timeout
+  .log
