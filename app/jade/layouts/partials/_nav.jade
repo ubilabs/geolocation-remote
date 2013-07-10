@@ -27,20 +27,10 @@ header
     label Online
 
   .gps_error
-    input(type="radio", name="gps[role]", val="-1", class="control-item", disabled)
-    label(for="gps", id="gps-error") GPS Error
-    br
-    input(type="radio", name="gps[role]", val="-1", class="control-item", disabled)
-    label No Error
-    br
-    input(type="radio", name="gps[role]", val="0", class="control-item", disabled)
-    label Unknown Error
-    br
-    input(type="radio", name="gps[role]", val="1", class="control-item", disabled)
-    label Permission denied
-    br
-    input(type="radio", name="gps[role]", val="2", class="control-item", disabled)
-    label No Position
-    br
-    input(type="radio", name="gps[role]", val="3", class="control-item", disabled)
-    label Timeout error
+
+    select
+        option(value="-1") No Error
+        option(value="0") Unknown Error
+        option(value="2") Permission denied
+        option(value="3") No Position
+        option(value="4") Timeout

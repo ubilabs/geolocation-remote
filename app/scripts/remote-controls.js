@@ -10,7 +10,7 @@ var ControlsModel = Model({
     this.$speedSlider = this.$controls.find('#speed');
     this.$accuracyDisplay = this.$controls.find('#accuracy-display span');
     this.$accuracySlider = this.$controls.find('#accuracy');
-    this.$gpsError = this.$controls.find('.gps_error input');
+    this.$gpsError = this.$controls.find('.gps_error select');
     this.$isOnline = this.$controls.find('.is-online input');
 
     this.$speedSlider.on('change', this.updateSpeed);
@@ -42,14 +42,14 @@ var ControlsModel = Model({
 
   setOnline: function () {
     var isOnline = $(event.target).is(':checked');
-    remote.online = isOnline;
+    remote.onLine = isOnline;
 
     updateWebapp();
   },
 
   setGpsError: function (event) {
     event.preventDefault();
-    var errorType = $(event.target).attr('val');
+    var errorType = $(event.target).find(":selected").val();
     remote.error = errorType;
 
     updateWebapp();
