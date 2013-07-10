@@ -5,6 +5,23 @@ var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
 
+var io = require('socket.io').listen(8888);
+
+io.sockets.on('connection', function (socket) {
+  socket.join('room');
+
+  socket.on('update:navigator', function (data) {
+    io.sockets.in('room').emit('update:navigator', data);
+  });
+
+  socket.on('update:remote', function (data) {
+    io.sockets.in('room').emit('update:remote', data);
+  });
+
+});
+
+console.log('Sockets: listening on port 8888');
+
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -31,12 +48,11 @@ module.exports = function (grunt) {
             },
             livereload: {
                 files: [
-                    '<%= folders.app %>/*.html',
-                    '{.tmp,<%= folders.app %>}/styles/{,*/}*.css',
-                    '{.tmp,<%= folders.app %>}/scripts/{,*/}*.js',
+                    '.tmp/styles/{,*/}*.css',
+                    '<%= folders.app %>/scripts/{,*/}*.js',
                     '<%= folders.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
-                tasks: ['livereload']
+                tasks: ['copy:server']
             },
             jade: {
                 files: ['app/jade/{,*/}*.jade', 'app/jade/**/{,*/}*.jade'],
@@ -45,7 +61,7 @@ module.exports = function (grunt) {
         },
         connect: {
             options: {
-                port: 9999,
+                port: 8000,
                 // change this to '0.0.0.0' to access the server from outside
                 hostname: 'localhost'
             },
@@ -68,20 +84,11 @@ module.exports = function (grunt) {
                         ];
                     }
                 }
-            },
-            dist: {
-                options: {
-                    middleware: function (connect) {
-                        return [
-                            mountFolder(connect, 'dist')
-                        ];
-                    }
-                }
             }
         },
         open: {
             server: {
-                path: 'http://localhost:<%= connect.options.port %>'
+                path: 'http://localhost:<%= connect.options.port %>/remote'
             }
         },
         clean: {
@@ -89,13 +96,12 @@ module.exports = function (grunt) {
                 files: [{
                     dot: true,
                     src: [
-                        '.tmp',
-                        '<%= folders.dist %>/*',
-                        '!<%= folders.dist %>/.git*'
+                        '<%= folders.tmp %>',
+                        '<%= folders.dist %>/*'
                     ]
                 }]
             },
-            server: '.tmp'
+            server: '<%= folders.tmp %>'
         },
         mocha: {
             all: {
@@ -108,7 +114,7 @@ module.exports = function (grunt) {
         compass: {
             options: {
                 sassDir: '<%= folders.app %>/styles',
-                cssDir: '.tmp/styles',
+                cssDir: '.tmp/remote/styles',
                 imagesDir: '<%= folders.app %>/images',
                 javascriptsDir: '<%= folders.app %>/scripts',
                 fontsDir: '<%= folders.app %>/styles/fonts',
@@ -127,105 +133,16 @@ module.exports = function (grunt) {
                 files: grunt.file.expandMapping(['{,*/}*.jade', '!**/_*'], 'dest', {
                     cwd: 'app/jade',
                     rename: function (dest, src) {
-
-                        if (/i18n/.test(src)) {
-                            return '<%= folders.tmp %>/' + src.replace(/index.i18n-(.*).jade/, '$1.html');;
-                        }
-
                         return '<%= folders.tmp %>/' + src.replace(/\.jade$/, '.html');
                     }
                 }),
                 options: {
                     client: false,
                     pretty: true,
-                    basedir: '<%= folders.app %>/jade',
-                    data: function(dest, src) {
-
-                        var page = src[0].replace(/app\/jade\/(.*)\/index.jade/, '$1');
-
-                        return {
-                            page: page
-                        };
-                    }
+                    basedir: '<%= folders.app %>/jade'
                 }
             }
         },
-        rev: {
-            dist: {
-                files: {
-                    src: [
-                        '<%= folders.dist %>/scripts/{,*/}*.js',
-                        '<%= folders.dist %>/styles/{,*/}*.css',
-                        '<%= folders.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
-                        '<%= folders.dist %>/styles/fonts/*'
-                    ]
-                }
-            }
-        },
-        useminPrepare: {
-            html: '<%= folders.tmp %>/index.html',
-            options: {
-                dest: '<%= folders.dist %>'
-            }
-        },
-        usemin: {
-            html: ['<%= folders.dist %>/{,*/}*.html'],
-            css: ['<%= folders.dist %>/styles/{,*/}*.css'],
-            options: {
-                dirs: ['<%= folders.dist %>']
-            }
-        },
-        imagemin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= folders.app %>/images',
-                    src: '{,*/}*.{png,jpg,jpeg}',
-                    dest: '<%= folders.dist %>/images'
-                }]
-            }
-        },
-        svgmin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= folders.app %>/images',
-                    src: '{,*/}*.svg',
-                    dest: '<%= folders.dist %>/images'
-                }]
-            }
-        },
-        cssmin: {
-            dist: {
-                files: {
-                    '<%= folders.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css'
-                    ]
-                }
-            }
-        },
-        htmlmin: {
-            dist: {
-                options: {
-                    /*removeCommentsFromCDATA: true,
-                    // https://github.com/folders/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= folders.tmp %>',
-                    src: '{,*/}*.html',
-                    dest: '<%= folders.dist %>'
-                }]
-            }
-        },
-        // Put files not handled in other tasks here
         copy: {
             dist: {
                 files: [{
@@ -251,11 +168,26 @@ module.exports = function (grunt) {
                         '*html'
                     ]
                 }]
+            },
+            server: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= folders.app %>/scripts',
+                    dest: '<%= folders.tmp %>/remote/scripts',
+                    src: ['**/*.js']
+                },
+                {
+                    expand: true,
+                    cwd: '<%= folders.app %>/bower_components',
+                    src: ['jquery/jquery.js', 'lodash/lodash.js'],
+                    dest: '<%= folders.tmp %>/remote/scripts/vendor'
+                }]
             }
         },
         concurrent: {
             server: [
-                'compass:server'
+                'compass:server',
+                'copy:server'
             ],
             test: [
                 'compass'
@@ -280,7 +212,7 @@ module.exports = function (grunt) {
             'jade',
             'concurrent:server',
             'livereload-start',
-            'connect:livereload:keepalive',
+            'connect:livereload',
             'open',
             'watch'
         ]);
@@ -297,22 +229,8 @@ module.exports = function (grunt) {
         'clean:dist',
         'jade',
         'concurrent:dist',
-        // 'copy:js',
-        // 'copy:css',
-        // 'useminPrepare',
-        // 'concurrent:dist',
-        // 'cssmin',
-        // 'concat',
-        // 'uglify',
         'copy:dist',
-        // 'copy:assets',
-        // 'rev',
-        // 'usemin'
     ]);
 
-    grunt.registerTask('default', [
-        'jshint',
-        'test',
-        'build'
-    ]);
+    grunt.registerTask('default', []);
 };
