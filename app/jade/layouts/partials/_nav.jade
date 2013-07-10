@@ -27,10 +27,13 @@
       header
         h2 Errors
 
-      input(type="checkbox", name="onLine", val="true", checked, class="control-item", disabled)
-      label Online
+      label(for="online-error") Online
+      input(id="online-error", class="control-item", type="checkbox", name="onLine", val="true", checked, disabled)
+
       br
-      select
+
+      label(for="gps-error") GPS error
+      select(id="gps-error")
           option(value="-1") No Error
           option(value="0") Unknown Error
           option(value="2") Permission denied
