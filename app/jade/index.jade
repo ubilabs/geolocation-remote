@@ -2,84 +2,41 @@ html
   head
     style
       body {
-          background: #fff;
-          font: helvetica;
+        background: #fff;
+        font-family: helvetica;
       }
 
       button {
-        background: #ddd;
-        border: 1px solid #999;
+        position: relative;
+        display: inline-block;
+        min-width: 50px;
+        background-color: #51908E;
+        border: 1px solid #3d7270;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 400;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        padding: 6px 4px 3px;
+        margin: 0;
+      }
+
+      button:active {
+        background-color: #e65440;
+        border-color: #a53c2e;
       }
 
   body
 
     // button: get position
-    button.get-current-position(onclick="testGetCurrentPosition()") getCurrentPosition
+    button.get-current-position getCurrentPosition
 
     // button: continiously get position
-    button.get-position(onclick="testWatchPosition()") watchPosition
+    button.watch-position watchPosition
 
     // div: position json
     #log
     #position
     #error
     #online
-
-  script
-    var positionDiv = document.getElementById('position'),
-      logDiv = document.getElementById('log'),
-      errorDiv = document.getElementById('error'),
-      onlineDiv = document.getElementById('online'),
-      watchId = '';
-
-    testGetCurrentPosition = function() {
-      console.log('calling getCurrentPosition');
-      navigator.geolocation.getCurrentPosition(success, error);
-    }
-
-    testWatchPosition = function() {
-
-      if (watchId != '') {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = '';
-
-        console.log('watchId cleared')
-      } else {
-        watchId = navigator.geolocation.watchPosition(success, error);
-        console.log('watchId: ' + watchId);
-      }
-
-    }
-
-    success = function(position) {
-      updatePosition(position);
-    }
-
-    error = function(error) {
-      console.log('error')
-      errorDiv.innerHTML = JSON.stringify(error);
-
-    }
-
-    updatePosition = function(position) {
-      msg = '<code data-language="javascript">' + JSON.stringify(position) + '</code>';
-
-      positionDiv.innerHTML = msg;
-    }
-
-    konsole = console;
-
-    console = {
-      log: function(log) {
-        logDiv.innerHTML = log + new Date();
-        konsole.log(log)
-      }
-    }
-
-    setInterval(function() {
-      if (window.navigator.onLine) {
-        onlineDiv.innerHTML = 'online'
-      } else {
-        onlineDiv.innerHTML = 'offline'
-      }
-    }, 1000);
