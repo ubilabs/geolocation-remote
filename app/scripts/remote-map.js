@@ -7,10 +7,10 @@ var MapModel = Model({
     keyboardShortcuts: false
   },
   icons: {
-    center: '/images/car.png',
-    highlight: '/images/highlight_default.png',
-    closest: '/images/highlight_closest.png',
-    ghost: '/images/ghost_default.png'
+    center: '/remote/images/car.png',
+    highlight: '/remote/images/highlight_default.png',
+    closest: '/remote/images/highlight_closest.png',
+    ghost: '/remote/images/ghost_default.png'
   },
   pois: [],
 
