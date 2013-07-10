@@ -22,10 +22,14 @@ html
     // div: position json
     #log
     #position
+    #error
+    #online
 
   script
     var positionDiv = document.getElementById('position'),
       logDiv = document.getElementById('log'),
+      errorDiv = document.getElementById('error'),
+      onlineDiv = document.getElementById('online'),
       watchId = '';
 
     testGetCurrentPosition = function() {
@@ -53,18 +57,29 @@ html
 
     error = function(error) {
       console.log('error')
-      updatePosition(error)
+      errorDiv.innerHTML = JSON.stringify(error);
+
     }
 
     updatePosition = function(position) {
-      positionDiv.innerHTML = JSON.stringify(position);
+      msg = '<code data-language="javascript">' + JSON.stringify(position) + '</code>';
+
+      positionDiv.innerHTML = msg;
     }
 
     konsole = console;
 
     console = {
       log: function(log) {
-        logDiv.innerHTML = JSON.stringify(log) + new Date();
+        logDiv.innerHTML = log + new Date();
         konsole.log(log)
       }
     }
+
+    setInterval(function() {
+      if (window.navigator.onLine) {
+        onlineDiv.innerHTML = 'online'
+      } else {
+        onlineDiv.innerHTML = 'offline'
+      }
+    }, 1000);
