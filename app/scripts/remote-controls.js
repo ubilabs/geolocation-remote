@@ -11,7 +11,7 @@ var ControlsModel = Model({
     this.$accuracyDisplay = this.$controls.find('#accuracy-display span');
     this.$accuracySlider = this.$controls.find('#accuracy');
     this.$gpsError = this.$controls.find('.gps_error select');
-    this.$isOnline = this.$controls.find('.is-online input');
+    this.$isOnline = this.$controls.find('input.is-online');
     this.$setSearchQuery = this.$controls.find('.set-webapp');
 
     this.$speedSlider.on('change', this.updateSpeed);
