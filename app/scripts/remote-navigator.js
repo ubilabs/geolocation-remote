@@ -3,9 +3,7 @@
  * get the geoPosition from a Websocket.
  */
 
-var useRemote = location.href.match(/(remote)/g);
-
-if (useRemote && window.geolocationRemote) {
+if (window.geolocationRemote) {
   var navigator = {
     geolocation: geolocationRemote(
       document.location.protocol + "//" +
@@ -16,4 +14,6 @@ if (useRemote && window.geolocationRemote) {
     language: navigator.language,
     onLine: true
   };
+
+  navigator.geolocation.sendToRemote({init: true});
 }

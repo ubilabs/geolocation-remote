@@ -2,7 +2,11 @@
  * Load remote modules for testing the app with a Google Maps
  */
 
-var remote = {};
+var remote = {
+  error: -1,
+  online: true
+};
+
 var webapp = {
   src: window.location.origin
 };
@@ -13,6 +17,10 @@ $(function() {
     distance: 1000,
     minMovement: 8,
     angle: 80,
+    position: {
+      "lng": 9.96,
+      "lat": 53.56
+    }
   };
 
   remote.map = new MapModel();
@@ -27,28 +35,14 @@ $(function() {
     8888
   );
 
+  remote.controls.enable();
+  remote.map.addCenter(remote.defaults.position, true);
+  // remote.controls.updateRoute(pos1, pos2, geocode true||false);
+
   remote.socket.on('update:remote', function (data) {
     console.log('update:remote @remote');
-    if (data.init && data.position) {
-
-      if (!remote.map.latLng) {
-        var options = data.options || {};
-
-        $.extend(remote.defaults, options);
-
-        remote.map.addCenter(data.position);
-
-        remote.controls.enable();
-      }
-
-      updateWebapp({
-        position: {
-          latitude: remote.map.latLng.lat(),
-          longitude: remote.map.latLng.lng()
-          }
-        }
-      );
-
+    if (data.init) {
+      updateWebapp();
     } else if (data.pois) {
       remote.map.addPois(data.pois);
     } else {
@@ -75,13 +69,18 @@ function updateWebapp (data) {
   var data = data || {},
     latLng = remote.map.latLng;
 
-  data.position = {
-    latitude: latLng && latLng.lat(),
-    longitude: latLng && latLng.lng(),
-    accuracy: remote.route.driving.accuracy
-  }
+  data.error = remote.error;
+  data.online = remote.online;
 
-  remote.socket.emit("update:webapp", data);
+  data.position = {
+    coords: {
+      latitude: latLng && latLng.lat(),
+      longitude: latLng && latLng.lng(),
+      accuracy: remote.route.driving.accuracy
+    },
+    timestamp: new Date().getTime()
+  }
+  remote.socket.emit("update:navigator", data);
 }
 
 function updateIframe (query) {
@@ -101,7 +100,6 @@ function updateIframe (query) {
   $('.webapp .url').val(query);
 
   $('iframe#webapp').load(function() {
-    console.log('load')
     injectJavascript();
   });
 
@@ -112,17 +110,23 @@ function updateIframe (query) {
 
 function injectJavascript () {
 
-  var $iframe = $('iframe#webapp').contents(),
-    $iframeBody = $iframe.find('body');
+  var script, iframe;
+
+  var iframe = document.getElementById("webapp");
 
   var jsLibs = [
-    '../remote/scripts/vendor/socket.io.min.js',
-    '../remote/scripts/remote-geolocation.js',
-    '../remote/scripts/remote-navigator.js'
+    '/remote/scripts/socket.io.min.js',
+    '/remote/scripts/remote-geolocation.js',
+    '/remote/scripts/remote-navigator.js'
   ]
 
-  $.each(jsLibs, function (i, lib) {
-    $('<script src="' + lib + '">').appendTo($iframeBody)
+  $.each(jsLibs, function (i, src) {
+
+    script = iframe.contentWindow.document.createElement("script");
+    script.type = "text/javascript";
+    script.src = src;
+    iframe.contentWindow.document.body.appendChild(script);
+
   })
 }
 

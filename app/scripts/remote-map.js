@@ -29,9 +29,13 @@ var MapModel = Model({
     google.maps.event.addListener(this.directionsDisplay, 'directions_changed', this.updateDirection);
   },
 
-  addCenter: function(position) {
-console.log(position)
+  addCenter: function(position, centerMap) {
+
     this.latLng = new google.maps.LatLng(position.lat, position.lng);
+
+    if (centerMap) {
+      this.map.setCenter(this.latLng);
+    }
 
     this.centerMarker = new google.maps.Marker({
       map: this.map,
@@ -43,58 +47,64 @@ console.log(position)
 
     google.maps.event.addListener(this.centerMarker, "dragend", this.updateCenter);
 
-    this.centerView = new google.maps.Circle({
-      center: this.latLng,
-      map: this.map,
-      radius: remote.defaults.distance
-    });
+    // this.centerView = new google.maps.Circle({
+    //   center: this.latLng,
+    //   map: this.map,
+    //   radius: remote.defaults.distance
+    // });
 
-    this.centerViewLine = new google.maps.Polyline({
-      map: this.map,
-      geodesic: true,
-      path: [this.latLng, google.maps.geometry.spherical.computeOffset(
-          this.latLng, remote.defaults.distance, 0
-        )]
-    });
+    // this.centerViewLine = new google.maps.Polyline({
+    //   map: this.map,
+    //   geodesic: true,
+    //   path: [this.latLng, google.maps.geometry.spherical.computeOffset(
+    //       this.latLng, remote.defaults.distance, 0
+    //     )]
+    // });
 
-    this.centerViewLine1 = new google.maps.Polyline({
-      map: this.map,
-      geodesic: true,
-      path: [this.latLng, google.maps.geometry.spherical.computeOffset(
-          this.latLng, remote.defaults.distance, remote.defaults.angle
-        )]
-    });
+    // this.centerViewLine1 = new google.maps.Polyline({
+    //   map: this.map,
+    //   geodesic: true,
+    //   path: [this.latLng, google.maps.geometry.spherical.computeOffset(
+    //       this.latLng, remote.defaults.distance, remote.defaults.angle
+    //     )]
+    // });
 
-    this.centerViewLine2 = new google.maps.Polyline({
-      map: this.map,
-      geodesic: true,
-      path: [this.latLng, google.maps.geometry.spherical.computeOffset(
-          this.latLng, remote.defaults.distance, -remote.defaults.angle
-        )]
-    });
+    // this.centerViewLine2 = new google.maps.Polyline({
+    //   map: this.map,
+    //   geodesic: true,
+    //   path: [this.latLng, google.maps.geometry.spherical.computeOffset(
+    //       this.latLng, remote.defaults.distance, -remote.defaults.angle
+    //     )]
+    // });
+
+    updateWebapp();
   },
 
-  updateCenter: function(data) {
+  updateCenter: function(data, centerMap) {
 
     this.latLng = data.latLng,
       direction = webapp.marker.direction,
       offset = google.maps.geometry.spherical.computeOffset;
 
+    if (centerMap) {
+      this.map.setCenter(this.latLng);
+    }
+
     this.centerMarker.setPosition(this.latLng);
 
-    this.centerView.setCenter(this.latLng);
+    // this.centerView.setCenter(this.latLng);
 
-    this.centerViewLine.setPath([this.latLng, offset(
-      this.latLng, remote.defaults.distance, direction
-    )]);
+    // this.centerViewLine.setPath([this.latLng, offset(
+    //   this.latLng, remote.defaults.distance, direction
+    // )]);
 
-    this.centerViewLine1.setPath([this.latLng, offset(
-      this.latLng, remote.defaults.distance, direction + remote.defaults.angle
-    )]);
+    // this.centerViewLine1.setPath([this.latLng, offset(
+    //   this.latLng, remote.defaults.distance, direction + remote.defaults.angle
+    // )]);
 
-    this.centerViewLine2.setPath([this.latLng, offset(
-      this.latLng, remote.defaults.distance, direction - remote.defaults.angle
-    )]);
+    // this.centerViewLine2.setPath([this.latLng, offset(
+    //   this.latLng, remote.defaults.distance, direction - remote.defaults.angle
+    // )]);
 
     updateWebapp();
   },

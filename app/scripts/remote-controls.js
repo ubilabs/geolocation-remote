@@ -42,14 +42,17 @@ var ControlsModel = Model({
 
   setOnline: function () {
     var isOnline = $(event.target).is(':checked');
-    updateWebapp({onLine: isOnline});
+    remote.online = isOnline;
+
+    updateWebapp();
   },
 
   setGpsError: function (event) {
     event.preventDefault();
     var errorType = $(event.target).attr('val');
+    remote.error = errorType;
 
-    updateWebapp({error: errorType});
+    updateWebapp();
   },
 
   onDriveButtonClick: function(event) {
