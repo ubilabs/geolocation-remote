@@ -29,13 +29,12 @@ var MapModel = Model({
     google.maps.event.addListener(this.directionsDisplay, 'directions_changed', this.updateDirection);
   },
 
-  addCenter: function(position, centerMap) {
+  addCenter: function(position) {
 
-    this.latLng = new google.maps.LatLng(position.lat, position.lng);
+    position = position || remote.app.position;
 
-    if (centerMap) {
-      this.map.setCenter(this.latLng);
-    }
+    this.latLng = new google.maps.LatLng(position.latitude, position.longitude);
+    this.map.setCenter(this.latLng);
 
     this.centerMarker = new google.maps.Marker({
       map: this.map,
@@ -77,13 +76,12 @@ var MapModel = Model({
     //     )]
     // });
 
-    updateWebapp();
+    this.trigger('center:added');
   },
 
   updateCenter: function(data, centerMap) {
 
     this.latLng = data.latLng,
-      direction = webapp.marker.direction,
       offset = google.maps.geometry.spherical.computeOffset;
 
     if (centerMap) {
@@ -106,7 +104,8 @@ var MapModel = Model({
     //   this.latLng, remote.defaults.distance, direction - remote.defaults.angle
     // )]);
 
-    updateWebapp();
+    remote.app.updatePosition(this.latLng);
+    this.trigger('center:updated');
   },
 
   updateDirection: function () {
