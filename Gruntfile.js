@@ -149,35 +149,47 @@ module.exports = function (grunt) {
                     expand: true,
                     dot: true,
                     cwd: '<%= folders.app %>',
-                    dest: '<%= folders.dist %>',
+                    dest: '<%= folders.dist %>/remote',
                     src: [
-                        '*.{ico,txt}',
-                        '.htaccess',
                         'images/{,*/}*',
-                        'styles/fonts/*',
+                        'assets/{,*/}*',
                         'scripts/{,*/}*js',
-                        'bower_components/**/*.js'
                     ]
                 }, {
                     expand: true,
                     dot: true,
-                    cwd: '<%= folders.tmp %>',
-                    dest: '<%= folders.dist %>',
-                    src: [
-                        'styles/{,*/}*css',
-                        '*html'
-                    ]
+                    cwd: '<%= folders.tmp %>/remote',
+                    dest: '<%= folders.dist %>/remote',
+                    src: 'styles/{,*/}*css'
+                },
+                {
+                    expand: true,
+                    cwd: '<%= folders.tmp %>/remote',
+                    dest: '<%= folders.dist %>/remote',
+                    src: '*.html'
+                },
+                {
+                    expand: true,
+                    flatten: true,
+                    cwd: '<%= folders.app %>/bower_components',
+                    src: ['jquery/jquery.js', 'lodash/lodash.js'],
+                    dest: '<%= folders.dist %>/remote/scripts/vendor'
                 }]
             },
             server: {
                 files: [{
                     expand: true,
-                    cwd: '<%= folders.app %>/scripts',
-                    dest: '<%= folders.tmp %>/remote/scripts',
-                    src: ['**/*.js']
+                    cwd: '<%= folders.app %>',
+                    dest: '<%= folders.tmp %>/remote',
+                    src: [
+                        'scripts/**/*.js',
+                        'images/{,*/}*',
+                        'assets/{,*/}*',
+                    ]
                 },
                 {
                     expand: true,
+                    flatten: true,
                     cwd: '<%= folders.app %>/bower_components',
                     src: ['jquery/jquery.js', 'lodash/lodash.js'],
                     dest: '<%= folders.tmp %>/remote/scripts/vendor'
@@ -191,12 +203,6 @@ module.exports = function (grunt) {
             ],
             test: [
                 'compass'
-            ],
-            dist: [
-                'compass:dist',
-                'imagemin',
-                'svgmin',
-                'htmlmin'
             ]
         }
     });
@@ -228,7 +234,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'jade',
-        'concurrent:dist',
+        'compass:dist',
         'copy:dist',
     ]);
 
