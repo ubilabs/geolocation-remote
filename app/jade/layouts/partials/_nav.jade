@@ -3,29 +3,33 @@
     header
       h1 Geolocation Remote Control
 
-    .webapp
+    section.webapp
+      header
+        h2 Query string for iFrame
       input.url(type="text", placeholder="query string: embed=true")
       button(class="set-webapp button") Set
 
-    #route
-      header Route
+    section.route
+      header
+        h2 Route
       input(type="text", placeholder="from", id="from", class="control-item", disabled)
       input(type="text", placeholder="to", id="to", class="control-item", disabled)
-      label(for="speed", id="speed-display") Geschwindigkeit (<span></span> km/h)
+      label(for="speed", id="speed-display") Speed (<span></span> km/h)
 
       input(type="range", min="0", max="200", value="80", id="speed", class="control-item", disabled)
-      label(for="accuracy", id="accuracy-display") GPS Genauigkeit (<span></span>m)</label>
+      label(for="accuracy", id="accuracy-display") GPS accuracy (<span></span>m)</label>
       input(type="range", min="0", max="1000", value="10", id="accuracy", class="control-item", disabled)
       div.buttons
           button(id="reset", class="button control-item") reset
           button(id="drive", class="button control-item") drive
 
-    .is-online
+    section.gps_error
+      header
+        h2 Errors
+
       input(type="checkbox", name="onLine", val="true", checked, class="control-item", disabled)
       label Online
-
-    .gps_error
-
+      br
       select
           option(value="-1") No Error
           option(value="0") Unknown Error
@@ -33,4 +37,8 @@
           option(value="3") No Position
           option(value="4") Timeout
 
-  .log
+    section.debug
+      header
+        h2 Log
+
+      .log
