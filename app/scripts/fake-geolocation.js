@@ -15,7 +15,7 @@ function geolocationRemote(socketUrl){
   // default is updateWebapp (called from remote control)
   // here is the entry point of our data from the remote control
   socket.on('update:navigator', function (data) {
-    console.log('update:navigator @navigator');
+    console.log('update:navigator @navigator<br>' + JSON.stringify(data));
 
     position = data.position;
 

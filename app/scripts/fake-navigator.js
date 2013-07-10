@@ -16,4 +16,6 @@ if (window.geolocationRemote) {
   };
 
   navigator.geolocation.sendToRemote({init: true});
+
+  console.log('fake navigator loaded')
 }
