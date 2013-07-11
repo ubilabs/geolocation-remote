@@ -154,6 +154,7 @@ module.exports = function (grunt) {
                         'images/{,*/}*',
                         'assets/{,*/}*',
                         'scripts/{,*/}*js',
+                        '!scripts/client-scripts.js'
                     ]
                 }, {
                     expand: true,
