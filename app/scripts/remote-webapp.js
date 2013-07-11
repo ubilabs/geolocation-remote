@@ -1,6 +1,7 @@
 var WebAppModel = Model({
 
   marker: {},
+  iframe: '',
 
   init: function() {
   },
@@ -25,7 +26,23 @@ var WebAppModel = Model({
     remote.socket.emit("update:navigator", data);
   },
 
+  addIframe: function () {
+    this.iframe = document.createElement('iframe');
+    document.body.appendChild(this.iframe);
+  },
+
+  removeIframe: function () {
+    this.iframe.parentNode.removeChild(this.iframe);
+    this.iframe = '';
+  },
+
   updateIframe: function(query) {
+
+    if (this.iframe.tagName) {
+      this.removeIframe();
+    }
+
+    this.addIframe();
 
     // prevent me (the remote) from getting framed all over again and again and again ...
     if (window != window.top) {
@@ -42,20 +59,14 @@ var WebAppModel = Model({
     // update control
     $('.webapp .url').val(search);
 
-    // listen for iframe to load and inject the javascript into the webapp
-    $('iframe#webapp').load(function() {
-      this.injectJavascript();
-    }.bind(this));
-
     // set src attr to iframe
-    $('iframe#webapp').attr('src', src);
+    this.iframe.setAttribute('onload','remote.webapp.injectJavascript()');
+    this.iframe.src = src;
   },
 
   injectJavascript: function() {
 
-    var script, iframe;
-
-    var iframe = document.getElementById("webapp");
+    var script;
 
     var jsLibs = [
       '/remote/scripts/vendor/socket.io.min.js',
@@ -66,11 +77,11 @@ var WebAppModel = Model({
 
     $.each(jsLibs, function (i, src) {
 
-      script = iframe.contentWindow.document.createElement("script");
+      script = this.iframe.contentWindow.document.createElement("script");
       script.type = "text/javascript";
       script.src = src;
-      iframe.contentWindow.document.body.appendChild(script);
+      this.iframe.contentWindow.document.body.appendChild(script);
 
-    })
+    }.bind(this))
   }
 });
