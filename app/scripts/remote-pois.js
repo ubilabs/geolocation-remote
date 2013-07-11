@@ -9,7 +9,7 @@ var Pois = Model({
     this.poiMarker = new google.maps.Marker({
       map: map,
       icon: '/images/ghost_default.png',
-      position: new google.maps.LatLng(poi.lat, poi.lng)
+      position: new google.maps.LatLng(poi.latitude, poi.longitude)
     });
 
     this.addPoiInfo();
