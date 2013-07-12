@@ -77,10 +77,10 @@ if (getCurrentButton) {
   getCurrentButton.addEventListener('click', testGetCurrentPosition);
 }
 
-var watchButton = document.getElementsByClassName('watch-positions')[0];
+var watchButton = document.getElementsByClassName('watch-position')[0];
 
-if (getCurrentButton) {
-  getCurrentButton.addEventListener('click', testWatchPosition);
+if (watchButton) {
+  watchButton.addEventListener('click', testWatchPosition);
 }
 
 // add here what you need you app to do after the fake navigator is loaded
