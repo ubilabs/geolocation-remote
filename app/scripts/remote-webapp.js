@@ -50,7 +50,7 @@ var WebAppModel = Model({
     }
 
     var origin = window.location.origin,
-      search = query || '?remote=true&' + window.location.search.replace('?',''),
+      search = query || '?embed=true&' + window.location.search.replace('?',''),
       src = origin + search
 
     // set http if not
