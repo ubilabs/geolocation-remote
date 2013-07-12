@@ -22,8 +22,11 @@ var RemoteLog = Model({
   addToLogQueue: function(logType, msg) {
     var logQueue = this.logQueue[logType] || [];
 
-    logQueue = logQueue.slice(1, 3)
-    logQueue.push(msg);
+    logQueue.push(msg.substring(0,200));
+
+    if (logQueue.length>=4) {
+      logQueue = logQueue.slice(1, 4)
+    }
 
     this.logQueue[logType] = logQueue;
   },
