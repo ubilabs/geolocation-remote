@@ -35,11 +35,7 @@ var RemoteLog = Model({
     logDiv.innerHTML = '';
 
     for (var i = logQueue.length - 1; i >= 0; i--) {
-      logDiv.innerHTML += logQueue[i] + '<br>';
+      logDiv.innerHTML += '<div class="log-message">' + logQueue[i] + '</div>';
     };
-  },
-
-  log: function (logType, msg) {
-    
   }
 });
