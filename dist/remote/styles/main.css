@@ -135,7 +135,7 @@ label {
   background-color: #fafafa;
   border-right: 2px solid #dddddd;
   color: #555555;
-  padding: 1em 2em;
+  padding: 1em 1.25em;
   position: relative;
   height: 100%;
   float: left;
@@ -177,4 +177,11 @@ label {
 .sidebar .button.cancel {
   background-color: #e65440;
   border-color: #a53c2e;
+}
+/* line 47, ../../../app/styles/sections/_controls.sass */
+.sidebar .log-message {
+  background: #dfdfdf;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+  font-size: 10px;
 }

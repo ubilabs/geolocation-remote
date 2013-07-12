@@ -1,5 +1,12 @@
 var remote = {};
 
+remote.log = new RemoteLog();
+
+function remoteLog (msg) {
+  remote.log.addToLogQueue('rcLog', msg);
+  remote.log.updateLog('rcLog')
+}
+
 remote.app = new App();
 remote.map = new MapModel();
 remote.route = new RouteModel();
@@ -56,10 +63,4 @@ function initEvents() {
   remote.map.on('route:changed', remote.route.onRouteChange);
   remote.map.on('center:added', remote.webapp.updateNavigator);
   remote.map.on('center:updated', remote.webapp.updateNavigator);
-}
-
-var $log = $('.log');
-
-function remoteLog (msg) {
-  $log.html(msg);
 }
