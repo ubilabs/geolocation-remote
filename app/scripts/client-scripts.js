@@ -26,14 +26,18 @@ testWatchPosition = function() {
 
   if (watchId != '') {
     navigator.geolocation.clearWatch(watchId);
+    console.log('webapp reset watchID: ' + watchId);
+
     watchId = '';
   } else {
     watchId = navigator.geolocation.watchPosition(success, error);
+    console.log('webapp got watchID: ' + watchId);
   }
 
 }
 
 success = function(position) {
+  console.log('Webapp got: ' + JSON.stringify(position));
   updatePosition(position);
 }
 
