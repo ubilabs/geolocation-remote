@@ -83,28 +83,28 @@ if (getCurrentButton) {
 // send poi infomations to the remote control
 
 
-app.init(); // maybe this one calls watchPosition()
+// app.init(); // maybe this one calls watchPosition()
 
-if (navigator.geolocation.sendToRemote) {
+// if (navigator.geolocation.sendToRemote) {
 
-  // You may want to add your own initial center marker. do it here
-  // You can set options too
+//   // You may want to add your own initial center marker. do it here
+//   // You can set options too
 
-  navigator.geolocation.sendToRemote({
-    init: true,
-    position: {
-      lat: 53.580973,
-      lng: 10.0008938
-    },
-    options: {
-      distance: 5000,
-      angle: 90
-    }
-  });
+//   navigator.geolocation.sendToRemote({
+//     init: true,
+//     position: {
+//       lat: 53.580973,
+//       lng: 10.0008938
+//     },
+//     options: {
+//       distance: 5000,
+//       angle: 90
+//     }
+//   });
 
-  // you maybe have events with data that would be nice to have in the Remote control
-  pois.on('pois:loaded', sendPois);
-}
+//   // you maybe have events with data that would be nice to have in the Remote control
+//   // pois.on('pois:loaded', sendPois);
+// }
 
 // add data to remote control. This is a way to remote control the remote control
 // for poi data we need at least latitude and longitude values in the object. 
@@ -118,6 +118,6 @@ if (navigator.geolocation.sendToRemote) {
 //   "id": 752392,
 // }
 
-function sendPois (data) {
-  navigator.geolocation.sendToRemote(data);
-}
+// function sendPois (data) {
+//   navigator.geolocation.sendToRemote(data);
+// }
