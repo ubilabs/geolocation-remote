@@ -62,6 +62,7 @@ console = {
   log: function(log) {
     logDiv.innerHTML += log + ' ' + new Date().toISOString() + '<br><br>';
     konsole.log(log)
+    parent.postMessage(log, window.location.origin + '/remote');
   }
 }
 

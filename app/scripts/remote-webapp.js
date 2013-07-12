@@ -49,19 +49,18 @@ var WebAppModel = Model({
       return;
     }
 
-    var origin = window.location.origin,
-      search = query || '?embed=true&' + window.location.search.replace('?',''),
-      src = origin + search
+    var search = query || '?embed=true&' + window.location.search.replace('?','');
+    var href = window.location.origin  + search;
 
     // set http if not
-    src = (/(http||https):\/\//.test(src)) ? src : 'http://' + src;
+    href = (/(http||https):\/\//.test(href)) ? href : 'http://' + href;
 
     // update control
     $('.webapp .url').val(search);
 
     // set src attr to iframe
     this.iframe.setAttribute('onload','remote.webapp.injectJavascript()');
-    this.iframe.src = src;
+    this.iframe.src = href;
   },
 
   injectJavascript: function() {
