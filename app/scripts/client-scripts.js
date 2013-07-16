@@ -46,7 +46,7 @@ error = function(error) {
 }
 
 updatePosition = function(position) {
-  msg = '<code data-language="javascript">' + JSON.stringify(position) + '</code>';
+  msg = '<div class="log-message">' + JSON.stringify(position) + '</div>';
   positionDiv.innerHTML = msg;
 }
 
@@ -64,7 +64,7 @@ konsole = console;
 
 console = {
   log: function(log) {
-    logDiv.innerHTML += log + ' ' + new Date().toISOString() + '<br><br>';
+    logDiv.innerHTML += '<div class="log-message">' + log + ' ' + new Date().toISOString() + '</div>';
     konsole.log(log)
     parent.postMessage(log, window.location.origin + '/remote');
   }
