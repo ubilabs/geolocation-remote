@@ -161,7 +161,7 @@ module.exports = function (grunt) {
                     dot: true,
                     cwd: '<%= folders.tmp %>/remote',
                     dest: '<%= folders.dist %>/remote',
-                    src: 'styles/{,*/}*css'
+                    src: ['styles/{,*/}*css', '!styles/client.css']
                 },
                 {
                     expand: true,
