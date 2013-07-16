@@ -7,17 +7,16 @@ This a small app to run a geolocation webapp in the browser with debugging possi
 
 ## Installation
 
-For now you have to clone the project rum npm install, bower install and grunt build. Copy the contents of the dist folder to your webapp root and access you webapp with http://[webapp root]/remote.
+You can clone and build the remote control yourself. It's a yo/grunt project.
 
-Add client-scripts.js in the remote scripts folder to tweak your app behaviour. It is for for use of your own scripts. The default one is not used for the build allthough you could just copy it as a starting point.
+But you can copy the contents of the dist folder (which is the complete remote folder) to your webapp root and access you webapp with http://[webapp root]/remote.
 
+Add client-scripts.js in the remote scripts folder to tweak your app behaviour. Use it for your own scripts that you need to debug your webapp with but dont want to remove for your build process. The default one is not used for the remote-control build, allthough you could just copy it as a starting point.
 
 ## About
 
 Developed by [Martin Kleppe](http://twitter.com/aemkei) at [Ubilabs](http://ubilabs.net).
 
 TODO: 
-* Put the debug info out of the iframe. with parent client communication and stuff maybe ...
 * resizeable iFrame
-* make log more usefull. with scrolling and not overflowing ...
 * nicerer infoWindow
