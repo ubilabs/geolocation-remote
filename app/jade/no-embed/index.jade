@@ -1,0 +1,17 @@
+html
+  head
+    link(href="/remote/styles/client.css", rel='stylesheet')
+  body
+
+    // button: get position
+    button.get-current-position getCurrentPosition
+
+    // button: continiously get position
+    button.watch-position watchPosition
+
+    // the no-embed/standalone version of the test index.html has to have the fake-geolocation and debug script directly included
+
+    script(src="/remote/scripts/vendor/socket.io.min.js")
+    script(src="/remote/scripts/fake-geolocation.js")
+    script(src="/remote/scripts/fake-navigator.js")
+    script(src="/remote/scripts/client-scripts.js")

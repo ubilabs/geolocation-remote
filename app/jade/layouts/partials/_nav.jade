@@ -1,0 +1,53 @@
+.sidebar
+  #controls
+    header
+      h1 Geolocation Remote Control
+
+    section.webapp
+      header
+        h2 Query string for iFrame
+      input.url(type="text", placeholder="query string: embed=true")
+      button(class="set-webapp button") Set
+
+    section.route
+      header
+        h2 Route
+      input(type="text", placeholder="from", id="from", class="control-item", disabled)
+      input(type="text", placeholder="to", id="to", class="control-item", disabled)
+      label(for="speed", id="speed-display") Speed (<span></span> km/h)
+
+      input(type="range", min="0", max="200", value="80", id="speed", class="control-item", disabled)
+      label(for="accuracy", id="accuracy-display") GPS accuracy (<span></span>m)</label>
+      input(type="range", min="0", max="1000", value="10", id="accuracy", class="control-item", disabled)
+      div.buttons
+          button(id="reset", class="button control-item") reset
+          button(id="drive", class="button control-item") drive
+
+    section.gps_error
+      header
+        h2 Errors
+
+      label(for="online-error") Online
+      input(id="online-error", class="is-online control-item", type="checkbox", name="onLine", val="true", checked, disabled)
+
+      br
+
+      label(for="gps-error") GPS error
+      select(id="gps-error")
+          option(value="-1") No Error
+          option(value="0") Unknown Error
+          option(value="1") Permission denied
+          option(value="2") No Position
+          option(value="3") Timeout
+
+    section.debug
+      header
+        h2 RC-Log
+
+      #rc-log
+
+    section.debug
+      header
+        h2 Client-Log
+
+      #client-log
