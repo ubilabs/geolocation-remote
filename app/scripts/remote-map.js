@@ -7,10 +7,7 @@ var MapModel = Model({
     keyboardShortcuts: false
   },
   icons: {
-    center: '/remote/images/car.png',
-    highlight: '/remote/images/highlight_default.png',
-    closest: '/remote/images/highlight_closest.png',
-    ghost: '/remote/images/ghost_default.png'
+    center: '/remote/images/geolocation-icon.png'
   },
   pois: [],
 
@@ -38,7 +35,16 @@ var MapModel = Model({
 
     this.centerMarker = new google.maps.Marker({
       map: this.map,
-      icon: new google.maps.MarkerImage(this.icons.center, null, null, new google.maps.Point(24, 24)),
+      icon:  {
+        url: this.icons.center,
+        // This marker is 20 pixels wide by 32 pixels tall.
+        size: new google.maps.Size(32, 32),
+        // The origin for this image is 0,0.
+        origin: new google.maps.Point(0,0),
+        // The anchor for this image is the base of the flagpole at 0,32.
+        anchor: new google.maps.Point(16, 16),
+        scaledSize: new google.maps.Size(32, 32)
+      },
       draggable: true,
       raiseOnDrag: false,
       position: this.latLng
@@ -119,11 +125,18 @@ var MapModel = Model({
   },
 
   addPois: function (data) {
+    var markerBounds = new google.maps.LatLngBounds();
     this.deletePois();
 
+    markerBounds.extend(this.latLng);
+
     _.each(data, _.bind(function (poi) {
-      this.pois.push(new Pois(poi, this.map));
+      var marker = new Pois(poi, this.map)
+      markerBounds.extend(marker.poiMarker.getPosition());
+      this.pois.push(marker);
     }, this));
+
+    this.map.fitBounds(markerBounds);
   },
 
   deletePois: function () {

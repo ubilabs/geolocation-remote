@@ -90,31 +90,55 @@ if (watchButton) {
 
 // app.init(); // maybe this one calls watchPosition()
 
-// if (navigator.geolocation.sendToRemote) {
+if (navigator.geolocation.sendToRemote) {
 
-//   // You may want to add your own initial center marker. do it here
-//   // You can set options too
+  // You may want to add your own initial center marker. do it here
+  // You can set options too
 
-//   navigator.geolocation.sendToRemote({
-//     init: true,
-//     position: {
-//       lat: 53.580973,
-//       lng: 10.0008938
-//     },
-//     options: {
-//       distance: 5000,
-//       angle: 90
-//     }
-//   });
+  navigator.geolocation.sendToRemote({
+    init: true,
+    position: {
+      lat: 53.580973,
+      lng: 10.0008938
+    },
+    options: {
+      distance: 5000,
+      angle: 90
+    }
+  });
 
-//   // you maybe have events with data that would be nice to have in the Remote control
-//   // pois.on('pois:loaded', sendPois);
-// }
+  var data = {
+    pois: [
+      {
+        "latitude": 53.545592,
+        "longitude": 9.952519,
+        "address_street": "Fischmarkt, Hamburg"
+      },{
+        "latitude": 53.548333,
+        "longitude": 9.978889,
+        "address_street": "St. Michael's Church, Hamburg"
+      },{
+        "latitude": 53.5502,
+        "longitude": 9.9922,
+        "address_street": "Hamburg Rathaus"
+      },{
+        "latitude": 53.545834,
+        "longitude": 9.966531,
+        "address_street": "Alter Elbtunnel, Hamburg"
+      },{
+        "latitude": 53.561027,
+        "longitude": 9.961437,
+        "address_street": "Julius Strasse 25, Hamburg"
+      }
+    ]
+  }
+  sendPois(data);
+}
 
 // add data to remote control. This is a way to remote control the remote control
 // for poi data we need at least latitude and longitude values in the object. 
 // everything else is shown in the infowindow for each poi
-//
+
 // {
 //   "latitude":53.624603,
 //   "longitude":10.08484,
@@ -123,6 +147,6 @@ if (watchButton) {
 //   "id": 752392,
 // }
 
-// function sendPois (data) {
-//   navigator.geolocation.sendToRemote(data);
-// }
+function sendPois (data) {
+  navigator.geolocation.sendToRemote(data);
+}
