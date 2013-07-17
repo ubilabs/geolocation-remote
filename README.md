@@ -13,6 +13,14 @@ But you can copy the contents of the dist folder (which is the complete remote f
 
 Add client-scripts.js in the remote scripts folder to tweak your app behaviour. Use it for your own scripts that you need to debug your webapp with but dont want to remove for your build process. The default one is not used for the remote-control build, allthough you could just copy it as a starting point.
 
+## Example
+
+To have an example what you can do just clone this repo. Do <code>npm install</code> and <code>bower install</code>.
+Then run <code>grunt server</code>. A page will open in your browser and you can play a little. 
+
+You can open the no-embed version (link is provided in the app) in every device to check different locations.
+In the no-embed version you dont have the possibility to log client data to the remote. 
+
 ## About
 
 Developed by [Martin Kleppe](http://twitter.com/aemkei) at [Ubilabs](http://ubilabs.net).
