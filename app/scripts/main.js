@@ -2,6 +2,10 @@ var remote = {};
 
 remote.log = new RemoteLog();
 
+/**
+ * Calls functions to update the logs in the remote control
+ * @param  {string} msg   message string
+ */
 function remoteLog (msg) {
   remote.log.addToLogQueue('rcLog', msg);
   remote.log.updateLog('rcLog')
@@ -40,7 +44,9 @@ remote.socket.on('update:remote', function (data) {
 remote.controls.updateSpeed();
 remote.controls.updateAccuracy();
 
-// init all the events
+/**
+ * Initialize the events for remote control
+ */
 function initEvents() {
   remote.app.on('appPosition:init', remote.map.addCenter);
   remote.app.on('appPosition:init', remote.webapp.updateIframe);
