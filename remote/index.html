@@ -1,0 +1,88 @@
+<!DOCTYPE html><!--[if lte IE 9]>
+<html class="ie"></html><![endif]--><!--[if gt IE 9]><!
+<html></html>-->
+<!--<![endif]-->
+<html>
+  <head>
+    <title>GeoLocation Remote Control</title>
+    <meta charset="UTF-8">
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <meta content="3 days" name="revisit-after">
+    <link href="styles/main.css" rel="stylesheet">
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon"><!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=geometry,places"></script>
+  </head>
+</html>
+<div class="sidebar">
+  <div id="controls">
+    <header>
+      <h1>Geolocation Remote Control</h1>
+    </header>
+    <section class="webapp">
+      <header>
+        <h2>Query string for iFrame</h2>
+      </header>
+      <input type="text" placeholder="query string: embed=true" class="url">
+      <button class="set-webapp button">Set</button>
+    </section>
+    <section class="route">
+      <header>
+        <h2>Route</h2>
+      </header>
+      <input type="text" placeholder="from" id="from" disabled class="control-item">
+      <input type="text" placeholder="to" id="to" disabled class="control-item">
+      <label for="speed" id="speed-display">Speed (<span></span> km/h)</label>
+      <input type="range" min="0" max="200" value="80" id="speed" disabled class="control-item">
+      <label for="accuracy" id="accuracy-display">GPS accuracy (<span></span>m)</label></label>
+      <input type="range" min="0" max="1000" value="10" id="accuracy" disabled class="control-item">
+      <div class="buttons">
+        <button id="reset" class="button control-item">reset</button>
+        <button id="drive" class="button control-item">drive</button>
+      </div>
+    </section>
+    <section class="gps_error">
+      <header>
+        <h2>Errors</h2>
+      </header>
+      <label for="online-error">Online</label>
+      <input id="online-error" type="checkbox" name="onLine" val="true" checked disabled class="is-online control-item"><br>
+      <label for="gps-error">GPS error</label>
+      <select id="gps-error">
+        <option value="-1">No Error</option>
+        <option value="0">Unknown Error</option>
+        <option value="1">Permission denied</option>
+        <option value="2">No Position</option>
+        <option value="3">Timeout</option>
+      </select>
+    </section>
+    <section class="debug">
+      <header>
+        <h2>RC-Log</h2>
+      </header>
+      <div id="rc-log"></div>
+    </section>
+    <section class="debug">
+      <header>
+        <h2>Client-Log</h2>
+      </header>
+      <div id="client-log"></div>
+    </section>
+  </div>
+</div>
+<div id="map_canvas"></div>
+<!-- Footer-->
+<footer></footer>
+<script src="scripts/vendor/jquery.js"></script>
+<script src="scripts/vendor/lodash.js"></script>
+<script src="scripts/vendor/fishbone.js"></script>
+<script src="scripts/vendor/socket.io.min.js"></script>
+<script src="scripts/remote-controls.js"></script>
+<script src="scripts/remote-route.js"></script>
+<script src="scripts/remote-map.js"></script>
+<script src="scripts/remote-pois.js"></script>
+<script src="scripts/remote-app.js"></script>
+<script src="scripts/remote-webapp.js"></script>
+<script src="scripts/remote-log.js"></script>
+<script src="scripts/main.js"></script>
