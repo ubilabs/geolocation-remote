@@ -26,5 +26,6 @@ In the no-embed version you dont have the possibility to log client data to the 
 Developed by [Martin Kleppe](http://twitter.com/aemkei) at [Ubilabs](http://ubilabs.net).
 
 TODO: 
+* heading information
 * resizeable iFrame
 * nicerer infoWindow
