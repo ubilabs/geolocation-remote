@@ -21,6 +21,10 @@ Then run <code>grunt server</code>. A page will open in your browser and you can
 You can open the no-embed version (link is provided in the app) in every device to check different locations.
 In the no-embed version you dont have the possibility to log client data to the remote. 
 
+## Screenshot
+
+![geolocation-remote screenshot](screenshot.png "geolocation-remote screenshot")
+
 ## About
 
 Developed by [Martin Kleppe](http://twitter.com/aemkei) at [Ubilabs](http://ubilabs.net).
