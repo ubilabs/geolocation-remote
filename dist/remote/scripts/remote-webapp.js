@@ -3,9 +3,10 @@ var WebAppModel = Model({
   marker: {},
   iframe: '',
 
-  init: function() {
-  },
-
+  /**
+   * Update the fake navigator of the client via socket.io.
+   * @param  {json} data 
+   */
   updateNavigator: function(data) {
     var data = data || {};
 
@@ -26,16 +27,26 @@ var WebAppModel = Model({
     remote.socket.emit("update:navigator", data);
   },
 
+  /**
+   * Add an iFrame to the remote control for the webapp
+   */
   addIframe: function () {
     this.iframe = document.createElement('iframe');
     document.body.appendChild(this.iframe);
   },
 
+  /**
+   * Removes the iFrame from remote control
+   */
   removeIframe: function () {
     this.iframe.parentNode.removeChild(this.iframe);
     this.iframe = '';
   },
 
+  /**
+   * Updates the iFrame in removing and adding again
+   * @param  {string} query it's used as the query string of the iframe url
+   */
   updateIframe: function(query) {
 
     if (this.iframe.tagName) {
@@ -63,6 +74,9 @@ var WebAppModel = Model({
     this.iframe.src = href;
   },
 
+  /**
+   * Injecting the nessasary js files in the client app
+   */
   injectJavascript: function() {
 
     var script;
