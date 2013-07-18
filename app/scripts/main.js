@@ -1,15 +1,16 @@
-var remote = {};
+var remote = {
+  defaults: {
+    distance: 1000,
+    angle: 45
+  },
+  socket: io.connect(
+    document.location.protocol + "//" +
+    document.location.hostname + ":" +
+    8888
+  )
+};
 
 remote.log = new RemoteLog();
-
-/**
- * Calls functions to update the logs in the remote control
- * @param  {string} msg   message string
- */
-function remoteLog (msg) {
-  remote.log.addToLogQueue('rcLog', msg);
-  remote.log.updateLog('rcLog')
-}
 
 remote.app = new App();
 remote.map = new MapModel();

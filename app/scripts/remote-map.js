@@ -52,40 +52,47 @@ var MapModel = Model({
 
     google.maps.event.addListener(this.centerMarker, "dragend", this.updateCenter);
 
-    // this.centerView = new google.maps.Circle({
-    //   center: this.latLng,
-    //   map: this.map,
-    //   radius: remote.defaults.distance
-    // });
+    this.centerViewDistance = new google.maps.Circle({
+      center: this.latLng,
+      strokeColor: 'white',
+      map: this.map,
+      radius: remote.defaults.distance
+    });
 
-    // this.centerViewLine = new google.maps.Polyline({
-    //   map: this.map,
-    //   geodesic: true,
-    //   path: [this.latLng, google.maps.geometry.spherical.computeOffset(
-    //       this.latLng, remote.defaults.distance, 0
-    //     )]
-    // });
+    this.centerHeadingLine = new google.maps.Polyline({
+      map: this.map,
+      strokeColor: 'white',
+      geodesic: true,
+      path: [this.latLng, google.maps.geometry.spherical.computeOffset(
+          this.latLng, remote.defaults.distance, 0
+        )]
+    });
 
-    // this.centerViewLine1 = new google.maps.Polyline({
-    //   map: this.map,
-    //   geodesic: true,
-    //   path: [this.latLng, google.maps.geometry.spherical.computeOffset(
-    //       this.latLng, remote.defaults.distance, remote.defaults.angle
-    //     )]
-    // });
+    this.centerPortLine = new google.maps.Polyline({
+      map: this.map,
+      strokeColor: 'red',
+      geodesic: true,
+      path: [this.latLng, google.maps.geometry.spherical.computeOffset(
+          this.latLng, remote.defaults.distance, remote.defaults.angle
+        )]
+    });
 
-    // this.centerViewLine2 = new google.maps.Polyline({
-    //   map: this.map,
-    //   geodesic: true,
-    //   path: [this.latLng, google.maps.geometry.spherical.computeOffset(
-    //       this.latLng, remote.defaults.distance, -remote.defaults.angle
-    //     )]
-    // });
+    this.centerStarboardLine = new google.maps.Polyline({
+      map: this.map,
+      strokeColor: 'green',
+      geodesic: true,
+      path: [this.latLng, google.maps.geometry.spherical.computeOffset(
+          this.latLng, remote.defaults.distance, -remote.defaults.angle
+        )]
+    });
 
     this.trigger('center:added');
   },
 
   updateCenter: function(data, centerMap) {
+
+    data = data || this;
+    var heading = google.maps.geometry.spherical.computeHeading(this.latLng, data.latLng);
 
     this.latLng = data.latLng,
       offset = google.maps.geometry.spherical.computeOffset;
@@ -96,19 +103,20 @@ var MapModel = Model({
 
     this.centerMarker.setPosition(this.latLng);
 
-    // this.centerView.setCenter(this.latLng);
+    this.centerViewDistance.setCenter(this.latLng);
+    this.centerViewDistance.setRadius(remote.defaults.distance);
 
-    // this.centerViewLine.setPath([this.latLng, offset(
-    //   this.latLng, remote.defaults.distance, direction
-    // )]);
+    this.centerHeadingLine.setPath([this.latLng, offset(
+      this.latLng, remote.defaults.distance, heading
+    )]);
 
-    // this.centerViewLine1.setPath([this.latLng, offset(
-    //   this.latLng, remote.defaults.distance, direction + remote.defaults.angle
-    // )]);
+    this.centerPortLine.setPath([this.latLng, offset(
+      this.latLng, remote.defaults.distance, heading + remote.defaults.angle
+    )]);
 
-    // this.centerViewLine2.setPath([this.latLng, offset(
-    //   this.latLng, remote.defaults.distance, direction - remote.defaults.angle
-    // )]);
+    this.centerStarboardLine.setPath([this.latLng, offset(
+      this.latLng, remote.defaults.distance, heading - remote.defaults.angle
+    )]);
 
     remote.app.updatePosition(this.latLng);
     this.trigger('center:updated');
