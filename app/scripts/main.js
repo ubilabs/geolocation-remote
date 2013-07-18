@@ -23,27 +23,45 @@ initEvents();
 remote.controls.enable();
 remote.app.getPosition();
 
+/**
+ * if we got a successfull socket connection we start listening to it
+ */
+if (remote.socket) {
+  remote.socket.on('update:remote', function (data) {
 
-remote.socket = io.connect(
-  document.location.protocol + "//" +
-  document.location.hostname + ":" +
-  8888
-);
+    remoteLog('update:remote @remote' + JSON.stringify(data));
 
-remote.socket.on('update:remote', function (data) {
+    if (data.init) {
+      remote.webapp.updateNavigator();
+    } 
 
-  remoteLog('update:remote @remote' + JSON.stringify(data));
+    if (data.pois) {
+      remote.map.addPois(data.pois);
+    }
 
-  if (data.init) {
-    remote.webapp.updateNavigator();
-  } else if (data.pois) {
-    remote.map.addPois(data.pois);
-  }
-})
+    if (data.options) {
+      for (var key in data.options) {
+        remote.defaults[key] = data.options[key];
+      }
+      remote.map.updateCenter();
+    }
+  })
+}
 
-// get initial values
+/**
+ * Set initial values
+ */
 remote.controls.updateSpeed();
 remote.controls.updateAccuracy();
+
+/**
+ * Calls functions to update the logs in the remote control
+ * @param  {string} msg   message string
+ */
+function remoteLog (msg) {
+  remote.log.addToLogQueue('rcLog', msg);
+  remote.log.updateLog('rcLog')
+}
 
 /**
  * Initialize the events for remote control
@@ -54,7 +72,6 @@ function initEvents() {
 
   remote.controls.on('place:changed', remote.route.updateRoutePlaces);
   remote.controls.on('speed:changed', remote.route.updateSpeed);
-  // remote.controls.on('accuracy:changed', remote.route.updateAccuracy);
   remote.controls.on('drive:reset', remote.route.resetDriving);
   remote.controls.on('drive:start', remote.route.startDriving);
   remote.controls.on('drive:stop', remote.route.stopDriving);
