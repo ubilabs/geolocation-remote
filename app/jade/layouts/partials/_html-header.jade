@@ -1,0 +1,22 @@
+!!!
+
+//if lte IE 9
+  html.ie
+//[if gt IE 9]><!
+  html
+//<![endif]
+html
+  head
+    title GeoLocation Remote Control
+    meta(charset='UTF-8')
+    meta(content='', name='description')
+    meta(content='', name='author')
+    meta(content='3 days', name='revisit-after')
+
+    link(href='styles/main.css', rel='stylesheet')
+    link(rel='shortcut icon', href='assets/favicon.ico', type='image/x-icon')
+
+    //if lt IE 9
+      script(src='//html5shiv.googlecode.com/svn/trunk/html5.js')
+
+    script(src='https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry,places')
