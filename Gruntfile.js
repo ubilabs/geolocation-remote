@@ -121,7 +121,11 @@ module.exports = function (grunt) {
                 importPath: 'app/bower_components',
                 relativeAssets: true
             },
-            dist: {},
+            dist: {
+                options: {
+                    noLineComments: true
+                }
+            },
             server: {
                 options: {
                     debugInfo: true
