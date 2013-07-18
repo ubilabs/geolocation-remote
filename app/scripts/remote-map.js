@@ -26,6 +26,10 @@ var MapModel = Model({
     google.maps.event.addListener(this.directionsDisplay, 'directions_changed', this.updateDirection);
   },
 
+  /**
+   * Add the center marker to the map with the given position
+   * @param  {object} position position object with at least valid latitude and longitude keys
+   */
   addCenter: function(position) {
 
     position = position || remote.app.position;
@@ -37,11 +41,8 @@ var MapModel = Model({
       map: this.map,
       icon:  {
         url: this.icons.center,
-        // This marker is 20 pixels wide by 32 pixels tall.
         size: new google.maps.Size(32, 32),
-        // The origin for this image is 0,0.
         origin: new google.maps.Point(0,0),
-        // The anchor for this image is the base of the flagpole at 0,32.
         anchor: new google.maps.Point(16, 16),
         scaledSize: new google.maps.Size(32, 32)
       },
