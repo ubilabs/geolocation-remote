@@ -1,0 +1,16 @@
+html
+  head
+    link(href="remote/styles/client.css", rel='stylesheet')
+
+  body
+
+    // button: get position
+    button.get-current-position getCurrentPosition
+
+    // button: continiously get position
+    button.watch-position watchPosition
+
+    // button: continiously get position
+    button(onclick="window.open(window.location.origin + '/no-embed','_blank');").open Open no-embed Version
+
+    // div: position json
