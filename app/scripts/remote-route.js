@@ -45,11 +45,12 @@ var RouteModel = Model({
       if (status == google.maps.DirectionsStatus.OK) {
         this.trigger('update', {route: response});
         this.updateRoute(response.routes[0]);
-        this.resetDriving();
       } else {
         this.updateRoute({});
-        this.resetDriving();
       }
+
+      this.resetDriving();
+
     }, this));
     
   },
