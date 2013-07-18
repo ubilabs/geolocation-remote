@@ -130,8 +130,12 @@ if (navigator.geolocation.sendToRemote) {
         "longitude": 9.961437,
         "address_street": "Julius Strasse 25, Hamburg"
       }
-    ]
+    ],
+    options: {
+      distance: 500
+    }
   }
+
   sendPois(data);
 }
 
@@ -139,12 +143,18 @@ if (navigator.geolocation.sendToRemote) {
 // for poi data we need at least latitude and longitude values in the object. 
 // everything else is shown in the infowindow for each poi
 
-// {
-//   "latitude":53.624603,
-//   "longitude":10.08484,
-//   "address_street": "B434 Bramfelder Chaussee 423",
-//   "permanent": true,
-//   "id": 752392,
+// data = {
+//  pois: [
+//    {
+//       "latitude": 53.624603,
+//       "longitude": 10.08484,
+//       "address_street": "B434 Bramfelder Chaussee 423",
+//       "id": 752392,
+//     }
+//   ],
+//   options: {
+//     distance: 500
+//   }
 // }
 
 function sendPois (data) {
