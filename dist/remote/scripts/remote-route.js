@@ -45,11 +45,12 @@ var RouteModel = Model({
       if (status == google.maps.DirectionsStatus.OK) {
         this.trigger('update', {route: response});
         this.updateRoute(response.routes[0]);
-        this.resetDriving();
       } else {
         this.updateRoute({});
-        this.resetDriving();
       }
+
+      this.resetDriving();
+
     }, this));
     
   },
@@ -57,15 +58,15 @@ var RouteModel = Model({
   updateRoute: function(routeDetails) {
     this.route.path = [];
 
-    $.each(routeDetails.legs, _.bind(function(i, leg) {
-      $.each(leg.steps, _.bind(function(k, step) {
-        $.each(step.path, _.bind(function(l, point) {
+    _.each(routeDetails.legs, function(leg, i) {
+      _.each(leg.steps, function(step, k) {
+        _.each(step.path, function(point, l) {
           if (l !== 0 || (i === 0 && k === 0 && l === 0)) {
             this.route.path.push(point);
           }
-        }, this));
-      }, this));
-    }, this));
+        }, this);
+      }, this);
+    }, this);
 
     this.calculateStepDistances();
   },
