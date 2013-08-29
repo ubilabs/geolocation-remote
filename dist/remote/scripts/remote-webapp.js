@@ -64,7 +64,7 @@ var WebAppModel = Model({
     var href = window.location.origin  + search;
 
     // set http if not
-    href = (/(http||https):\/\//.test(href)) ? href : 'http://' + href;
+    href = (/^(http||https):\/\//.test(href)) ? href : 'http://' + href;
 
     // update control
     $('.webapp .url').val(search);
