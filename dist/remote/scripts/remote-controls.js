@@ -27,18 +27,18 @@ var ControlsModel = Model({
   },
 
   enable: function () {
-    $.each(this.$controlItems, this.enableControl);
+    _.each(this.$controlItems, this.enableControl);
   },
 
-  enableControl: function (i, e) {
+  enableControl: function (e) {
     $(e).removeAttr("disabled");
   },
 
   disable: function () {
-    $.each(this.$controlItems, this.disableControl);
+    _.each(this.$controlItems, this.disableControl);
   },
 
-  disableControl: function (i, e) {
+  disableControl: function (e) {
     $(e).attr("disabled",'disabled');
   },
 

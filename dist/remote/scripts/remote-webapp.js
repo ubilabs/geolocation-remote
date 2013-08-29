@@ -88,13 +88,13 @@ var WebAppModel = Model({
       '/remote/scripts/client-scripts.js'
     ]
 
-    $.each(jsLibs, function (i, src) {
+    _.each(jsLibs, function (src) {
 
       script = this.iframe.contentWindow.document.createElement("script");
       script.type = "text/javascript";
       script.src = src;
       this.iframe.contentWindow.document.body.appendChild(script);
 
-    }.bind(this))
+    }, this);
   }
 });
