@@ -26,6 +26,10 @@ var MapModel = Model({
     google.maps.event.addListener(this.directionsDisplay, 'directions_changed', this.updateDirection);
   },
 
+  /**
+   * Add the center marker to the map with the given position
+   * @param  {object} position position object with at least valid latitude and longitude keys
+   */
   addCenter: function(position) {
 
     position = position || remote.app.position;
