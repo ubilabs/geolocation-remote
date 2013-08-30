@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "dependencies": {
     "jquery": "*",
-    "lodash": "~v1.3.1"
+    "lodash": "~v1.3.1",
+    "fishbone.js": "~1.0.0"
   },
   "devDependencies": {}
 }
