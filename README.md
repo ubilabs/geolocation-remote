@@ -27,7 +27,7 @@ In the no-embed version you dont have the possibility to log client data to the 
 
 ## About
 
-Developed by [Martin Kleppe](http://twitter.com/aemkei) at [Ubilabs](http://ubilabs.net).
+Developed at [Ubilabs](http://ubilabs.net).
 
 TODO: 
 * heading information
