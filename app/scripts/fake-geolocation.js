@@ -1,9 +1,7 @@
-function geolocationRemote(socketUrl){
+function geolocationRemote(connect){
 
-  // Set up our socket listening on socketUrl
-  var socket = io.connect(socketUrl),
     // here we store our watchers (There is only one real watcher but if we call getCurrentPosition we create a new one so we need a place to store two watchers ...)
-    watchers = [],
+  var watchers = [],
     // watcher ID
     id = 0,
     // Position data of the remote control
@@ -11,10 +9,38 @@ function geolocationRemote(socketUrl){
     // store the errorCode
     errorCode = -1;
 
-  // what should we listen for?
-  // default is updateWebapp (called from remote control)
-  // here is the entry point of our data from the remote control
-  socket.on('update:navigator', function (data) {
+  if (connect === 'socket') {
+
+    // Set up our socket listening on socketUrl
+    var socket = io.connect(socketUrl);
+    // what should we listen for?
+    // default is update:navigator (called from remote control)
+    // here is the entry point of our data from the remote control
+    socket.on('update:navigator', onDataReceived);
+
+    // send Data to remote control.
+    // Like starting point (where your webapp is located right now),
+    // pois you use in your app an want to see on the map, etc.
+    function sendToRemote (data) {
+      socket.emit("update:remote", data);
+    }
+
+  } else if (connect === 'iframe') {
+
+    // we always listen to postMessages
+    window.addEventListener("message", onDataReceived, false);
+
+    function sendToRemote (data) {
+      data = {data: data};
+      parent.postMessage(data, window.location.origin + '/remote');
+    }
+  }
+
+  function onDataReceived(data) {
+    if (connect === 'iframe') {
+      data = data.data;
+    }
+
     position = data.position;
 
     errorCode = data.error || errorCode;
@@ -33,13 +59,6 @@ function geolocationRemote(socketUrl){
     } else if (data.error) { // if there is an error defined we call the error callback
       onPositionError();
     }
-  });
-
-  // send Data to remote control.
-  // Like starting point (where your webapp is located right now),
-  // pois you use in your app an want to see on the map, etc.
-  function sendToRemote (data) {
-    socket.emit("update:remote", data);
   }
 
   // called when we receive an error from the remote control

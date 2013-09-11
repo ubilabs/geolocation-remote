@@ -66,7 +66,9 @@ console = {
   log: function(log) {
     logDiv.innerHTML += '<div class="log-message">' + log + ' ' + new Date().toISOString() + '</div>';
     konsole.log(log)
-    parent.postMessage(log, window.location.origin + '/remote');
+
+    data = {log: log};
+    parent.postMessage(data, window.location.origin + '/remote');
   }
 }
 
@@ -96,7 +98,6 @@ if (navigator.geolocation.sendToRemote) {
   // You can set options too
 
   navigator.geolocation.sendToRemote({
-    init: true,
     position: {
       lat: 53.580973,
       lng: 10.0008938
@@ -140,7 +141,7 @@ if (navigator.geolocation.sendToRemote) {
 }
 
 // add data to remote control. This is a way to remote control the remote control
-// for poi data we need at least latitude and longitude values in the object. 
+// for poi data we need at least latitude and longitude values in the object.
 // everything else is shown in the infowindow for each poi
 
 // data = {
