@@ -3,19 +3,19 @@
  * get the geoPosition from a Websocket.
  */
 
+var connect;
+
+connect = ( window.self === window.top ) ? 'socket' : 'iframe';
+
 if (window.geolocationRemote) {
   var navigator = {
-    geolocation: geolocationRemote(
-      document.location.protocol + "//" +
-      document.location.hostname + ":" +
-      8888
-    ),
+    geolocation: geolocationRemote(connect),
     userAgent: navigator.userAgent,
     language: navigator.language,
     onLine: true
   };
 
-  navigator.geolocation.sendToRemote({init: true});
+  navigator.geolocation.sendToRemote({init: true, connect: connect});
 
   console.log('fake navigator loaded')
 }

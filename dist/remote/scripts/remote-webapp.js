@@ -5,7 +5,7 @@ var WebAppModel = Model({
 
   /**
    * Update the fake navigator of the client via socket.io.
-   * @param  {json} data 
+   * @param  {json} data
    */
   updateNavigator: function(data) {
     var data = data || {};
@@ -24,7 +24,11 @@ var WebAppModel = Model({
 
     remoteLog('update:navigator' + JSON.stringify(data));
 
-    remote.socket.emit("update:navigator", data);
+    if (remote.socket) {
+      remote.socket.emit("update:navigator", data);
+    } else {
+      this.iframe.contentWindow.postMessage(data, window.location.origin);
+    }
   },
 
   /**

@@ -23,6 +23,8 @@ var MapModel = Model({
       map: this.map
     });
 
+    this.infoWindow = new google.maps.InfoWindow();
+
     google.maps.event.addListener(this.directionsDisplay, 'directions_changed', this.updateDirection);
   },
 
@@ -140,7 +142,8 @@ var MapModel = Model({
     markerBounds.extend(this.latLng);
 
     _.each(data, _.bind(function (poi) {
-      var marker = new Pois(poi, this.map)
+      var marker = new Pois(poi, this);
+
       markerBounds.extend(marker.poiMarker.getPosition());
       this.pois.push(marker);
     }, this));

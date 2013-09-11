@@ -1,13 +1,15 @@
 var Pois = Model({
 
+  contentString: '',
 
   init: function (poi, map) {
 
-    this.map = map;
+    this.map = map.map;
     this.poi = poi;
+    this.infoWindow = map.infoWindow;
 
     this.poiMarker = new google.maps.Marker({
-      map: map,
+      map: this.map,
       position: new google.maps.LatLng(poi.latitude, poi.longitude)
     });
 
@@ -24,24 +26,22 @@ var Pois = Model({
   },
 
   addPoiInfo: function () {
-    var contentString = '';
-
-    this.infowindow = new google.maps.InfoWindow();
-
     _.each(this.poi, function (value, key) {
-      contentString += key + ": " + value + "<br />";
+      this.contentString += key + ": " + value + "<br />";
     })
 
-    this.infowindow.setContent(contentString);
-    this.infowindow.setPosition(this.poiMarker.getPosition());
-
+    console.log(this.contentString);
   },
 
   openPoiInfo: function () {
-    this.infowindow.open(this.map);
+    console.log('hver')
+    this.infoWindow.setContent(this.contentString);
+    this.infoWindow.setPosition(this.poiMarker.getPosition());
+
+    this.infoWindow.open(this.map);
   },
 
   closePoiInfo: function () {
-    this.infowindow.close();
+    this.infoWindow.close();
   }
 });

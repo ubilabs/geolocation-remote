@@ -6,17 +6,10 @@ var RemoteLog = Model({
     rcLog: document.getElementById('rc-log')
   },
 
-  init: function() {
-    window.addEventListener("message", this.receiveMessage, false);
-  },
-
-  receiveMessage: function(event)
+  receiveMessage: function(logType, msg)
   {
-    if (event.origin !== window.location.origin)
-      return;
-
-    this.addToLogQueue('clientLog', event.data);
-    this.updateLog('clientLog');
+    this.addToLogQueue(logType, msg);
+    this.updateLog(logType);
   },
 
   addToLogQueue: function(logType, msg) {

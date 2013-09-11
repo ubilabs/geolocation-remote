@@ -31,21 +31,26 @@ if (remote.socket) {
 
     remoteLog('update:remote @remote' + JSON.stringify(data));
 
-    if (data.init) {
-      remote.webapp.updateNavigator();
-    } 
-
-    if (data.pois) {
-      remote.map.addPois(data.pois);
-    }
-
-    if (data.options) {
-      for (var key in data.options) {
-        remote.defaults[key] = data.options[key];
-      }
-      remote.map.updateCenter();
-    }
+    remote.app.onDataReceived(data);
   })
+}
+
+// listen to postMessages
+window.addEventListener("message", postMessageReceive, false);
+
+
+
+function postMessageReceive (data) {
+  if (event.origin !== window.location.origin)
+    return;
+
+  var data = event.data;
+
+  if (data.log) {
+    remote.log.receiveMessage('client-log', data.log)
+  } else {
+    remote.app.onDataReceived(data.data)
+  }
 }
 
 /**

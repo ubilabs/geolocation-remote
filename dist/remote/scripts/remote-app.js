@@ -38,6 +38,26 @@ var App = Model({
       latitude: latLng.lat(),
       longitude: latLng.lng()
     };
+  },
+
+  onDataReceived: function (data) {
+    if (data.init) {
+      remote.webapp.updateNavigator();
+      if (data.connect === 'iframe') {
+        delete remote.socket;
+      }
+    }
+
+    if (data.pois) {
+      remote.map.addPois(data.pois);
+    }
+
+    if (data.options) {
+      for (var key in data.options) {
+        remote.defaults[key] = data.options[key];
+      }
+      remote.map.updateCenter();
+    }
   }
 
 })
