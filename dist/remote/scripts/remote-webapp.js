@@ -64,7 +64,7 @@ var WebAppModel = Model({
     var href = window.location.origin  + search;
 
     // set http if not
-    href = (/(http||https):\/\//.test(href)) ? href : 'http://' + href;
+    href = (/^(http||https):\/\//.test(href)) ? href : 'http://' + href;
 
     // update control
     $('.webapp .url').val(search);
@@ -88,13 +88,13 @@ var WebAppModel = Model({
       '/remote/scripts/client-scripts.js'
     ]
 
-    $.each(jsLibs, function (i, src) {
+    _.each(jsLibs, function (src) {
 
       script = this.iframe.contentWindow.document.createElement("script");
       script.type = "text/javascript";
       script.src = src;
       this.iframe.contentWindow.document.body.appendChild(script);
 
-    }.bind(this))
+    }, this);
   }
 });
