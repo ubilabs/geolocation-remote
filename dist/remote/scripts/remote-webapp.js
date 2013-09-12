@@ -86,10 +86,10 @@ var WebAppModel = Model({
     var script;
 
     var jsLibs = [
-      '/remote/scripts/vendor/socket.io.min.js',
-      '/remote/scripts/fake-geolocation.js',
-      '/remote/scripts/fake-navigator.js',
-      '/remote/scripts/client-scripts.js'
+      'remote/scripts/vendor/socket.io.min.js',
+      'remote/scripts/fake-geolocation.js',
+      'remote/scripts/fake-navigator.js',
+      'remote/scripts/client-scripts.js'
     ]
 
     _.each(jsLibs, function (src) {
