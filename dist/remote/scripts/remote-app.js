@@ -41,6 +41,12 @@ var App = Model({
   },
 
   onDataReceived: function (data) {
+
+    if (data.position) {
+      data.latLng = new google.maps.LatLng(data.position.lat, data.position.lng);
+      remote.map.updateCenter(data, true);
+    }
+
     if (data.init) {
       remote.webapp.updateNavigator();
       if (data.connect === 'iframe') {
