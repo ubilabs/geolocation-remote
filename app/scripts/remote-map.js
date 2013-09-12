@@ -7,7 +7,7 @@ var MapModel = Model({
     keyboardShortcuts: false
   },
   icons: {
-    center: '/remote/images/geolocation-icon.png'
+    center: 'images/geolocation-icon.png'
   },
   pois: [],
 
