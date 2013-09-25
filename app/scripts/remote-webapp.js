@@ -65,7 +65,7 @@ var WebAppModel = Model({
     }
 
     var search = query || '?embed=true&' + window.location.search.replace('?','');
-    var href = window.location.origin  + search;
+    var href = window.location.href.replace('/remote', '')  + search;
 
     // set http if not
     href = (/^(http||https):\/\//.test(href)) ? href : 'http://' + href;
