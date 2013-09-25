@@ -7,7 +7,14 @@ function geolocationRemote(connect){
     // Position data of the remote control
     position,
     // store the errorCode
-    errorCode = -1;
+    errorCode = -1,
+    // error messages of GPS errors
+    errorMessages = {
+      0: 'UNKNOWN_ERROR',
+      1: 'PERMISSION_DENIED',
+      2: 'POSITION_UNAVAILABLE',
+      3: 'TIMEOUT'
+    };
 
   if (connect === 'socket') {
 
@@ -69,7 +76,10 @@ function geolocationRemote(connect){
       watcher = watchers[watcher];
 
       if (watcher.error) {
-        watcher.error({code: errorCode*1});
+        watcher.error({
+          code: errorCode*1,
+          message: errorMessages[errorCode]
+        });
       }
     }
   }
@@ -87,7 +97,10 @@ function geolocationRemote(connect){
     if (position && errorCode < 0){
       success(position);
     } else {
-      error({code: errorCode*1});
+      error({
+        code: errorCode*1,
+        message: errorMessages[errorCode]
+      });
     }
   }
 
