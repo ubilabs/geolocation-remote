@@ -6,7 +6,6 @@ var RemoteComm = Model({
   sendToClients: function (data) {
     if (this.channel) {
       this.channel.trigger('client-locationUpdate', data);
-      console.log(this.channel);
     }
 
     if (this.$iframe) {
