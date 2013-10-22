@@ -7,30 +7,41 @@ function geolocationRemote(connect){
     // Position data of the remote control
     position,
     // store the errorCode
-    errorCode = -1;
+    errorCode = -1,
+    // error messages of GPS errors
+    errorMessages = {
+      0: 'UNKNOWN_ERROR',
+      1: 'PERMISSION_DENIED',
+      2: 'POSITION_UNAVAILABLE',
+      3: 'TIMEOUT'
+    };
 
   if (connect === 'socket') {
+    var pusher = new Pusher(remote.pusherConfig.KEY, {
+      authEndpoint: remote.pusherConfig.authEndpoint
+    });
 
-    // Set up our socket listening on socketUrl
-    var socket = io.connect(socketUrl);
-    // what should we listen for?
-    // default is update:navigator (called from remote control)
-    // here is the entry point of our data from the remote control
-    socket.on('update:navigator', onDataReceived);
+    var channel = pusher.subscribe('private-remoteLocationManager');
 
-    // send Data to remote control.
-    // Like starting point (where your webapp is located right now),
-    // pois you use in your app an want to see on the map, etc.
-    function sendToRemote (data) {
-      socket.emit("update:remote", data);
-    }
+    channel.bind('pusher:subscription_succeeded', onDataReceived);
+
+    var listenChannel = pusher.subscribe('private-remoteLocationManager');
+
+    listenChannel.bind('client-locationUpdate', function(data) {
+      onDataReceived(data);
+    });
 
   } else if (connect === 'iframe') {
-
-    // we always listen to postMessages
     window.addEventListener("message", onDataReceived, false);
+  }
 
-    function sendToRemote (data) {
+
+  function sendToRemote (data) {
+    if (connect === 'socket') {
+      channel.trigger('client-locationUpdate', data);
+    }
+
+    if (connect === 'iframe') {
       data = {data: data};
       parent.postMessage(data, window.location.origin + '/remote');
     }
@@ -69,7 +80,10 @@ function geolocationRemote(connect){
       watcher = watchers[watcher];
 
       if (watcher.error) {
-        watcher.error({code: errorCode*1});
+        watcher.error({
+          code: errorCode*1,
+          message: errorMessages[errorCode]
+        });
       }
     }
   }
@@ -87,7 +101,10 @@ function geolocationRemote(connect){
     if (position && errorCode < 0){
       success(position);
     } else {
-      error({code: errorCode*1});
+      error({
+        code: errorCode*1,
+        message: errorMessages[errorCode]
+      });
     }
   }
 
