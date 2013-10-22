@@ -4,7 +4,7 @@ var WebAppModel = Model({
   iframe: '',
 
   /**
-   * Update the fake navigator of the client via socket.io.
+   * Prepare data for fake navigator of the clients
    * @param  {json} data
    */
   updateNavigator: function(data) {
@@ -24,11 +24,7 @@ var WebAppModel = Model({
 
     remoteLog('update:navigator' + JSON.stringify(data));
 
-    if (remote.socket) {
-      remote.socket.emit("update:navigator", data);
-    } else {
-      this.iframe.contentWindow.postMessage(data, window.location.origin);
-    }
+    remote.comm.sendToClients(data);
   },
 
   /**
@@ -36,6 +32,8 @@ var WebAppModel = Model({
    */
   addIframe: function () {
     this.iframe = document.createElement('iframe');
+    this.iframe.id = 'webapp';
+
     document.body.appendChild(this.iframe);
   },
 
@@ -76,6 +74,8 @@ var WebAppModel = Model({
     // set src attr to iframe
     this.iframe.setAttribute('onload','remote.webapp.injectJavascript()');
     this.iframe.src = href;
+
+    this.trigger('iframe:ready');
   },
 
   /**
@@ -86,7 +86,6 @@ var WebAppModel = Model({
     var script;
 
     var jsLibs = [
-      'remote/scripts/vendor/socket.io.min.js',
       'remote/scripts/fake-geolocation.js',
       'remote/scripts/fake-navigator.js',
       'remote/scripts/client-scripts.js'

@@ -1,57 +1,17 @@
-var remote = {
-  defaults: {
-    distance: 1000,
-    angle: 45
-  },
-  socket: io.connect(
-    document.location.protocol + "//" +
-    document.location.hostname + ":" +
-    8888
-  )
-};
+var remote = remote || {};
 
 remote.log = new RemoteLog();
-
 remote.app = new App();
 remote.map = new MapModel();
 remote.route = new RouteModel();
 remote.controls = new ControlsModel();
 remote.webapp = new WebAppModel();
+remote.comm = new RemoteComm();
 
 initEvents();
 
 remote.controls.enable();
 remote.app.getPosition();
-
-/**
- * if we got a successfull socket connection we start listening to it
- */
-if (remote.socket) {
-  remote.socket.on('update:remote', function (data) {
-
-    remoteLog('update:remote @remote' + JSON.stringify(data));
-
-    remote.app.onDataReceived(data);
-  })
-}
-
-// listen to postMessages
-window.addEventListener("message", postMessageReceive, false);
-
-
-
-function postMessageReceive (data) {
-  if (event.origin !== window.location.origin)
-    return;
-
-  var data = event.data;
-
-  if (data.log) {
-    remote.log.receiveMessage('client-log', data.log)
-  } else {
-    remote.app.onDataReceived(data.data)
-  }
-}
 
 /**
  * Set initial values
@@ -92,4 +52,6 @@ function initEvents() {
   remote.map.on('route:changed', remote.route.onRouteChange);
   remote.map.on('center:added', remote.webapp.updateNavigator);
   remote.map.on('center:updated', remote.webapp.updateNavigator);
+
+  remote.webapp.on('iframe:ready', remote.comm.iframeSetup);
 }
