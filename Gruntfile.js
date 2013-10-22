@@ -5,23 +5,6 @@ var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
 };
 
-var io = require('socket.io').listen(8888);
-
-io.sockets.on('connection', function (socket) {
-  socket.join('room');
-
-  socket.on('update:navigator', function (data) {
-  io.sockets.in('room').emit('update:navigator', data);
-  });
-
-  socket.on('update:remote', function (data) {
-  io.sockets.in('room').emit('update:remote', data);
-  });
-
-});
-
-console.log('Sockets: listening on port 8888');
-
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -61,6 +44,14 @@ module.exports = function (grunt) {
       jade: {
         files: ['app/jade/{,*/}*.jade', 'app/jade/**/{,*/}*.jade'],
         tasks: ['jade']
+      }
+    },
+    express: {
+      pusher: {
+        options: {
+          port: 5000,
+          server: 'app/pusher/pusher-auth.js'
+        }
       }
     },
     connect: {
@@ -227,6 +218,7 @@ module.exports = function (grunt) {
       'jade',
       'concurrent:server',
       'connect:server',
+      'express:pusher',
       'open',
       'watch'
     ]);
