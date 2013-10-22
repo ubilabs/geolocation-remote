@@ -173,7 +173,7 @@ module.exports = function (grunt) {
           expand: true,
           flatten: true,
           cwd: '<%= folders.app %>/bower_components',
-          src: ['jquery/jquery.js', 'lodash/lodash.js'],
+          src: ['jquery/jquery.js', 'lodash/lodash.js', 'fishbone.js/fishbone.js'],
           dest: '<%= folders.dist %>/remote/scripts/vendor'
         }]
       },
