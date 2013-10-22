@@ -30,7 +30,7 @@ grunt.initConfig({
     }
   }
 });
-``
+```
 
 The config for pusher is located in ```remote-config.js```.
 
