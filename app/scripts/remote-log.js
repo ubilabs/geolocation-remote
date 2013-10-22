@@ -2,8 +2,8 @@ var RemoteLog = Model({
 
   logQueue: {},
   logContainers: {
-    clientLog: document.getElementById('client-log'),
-    rcLog: document.getElementById('rc-log')
+    clientLog: document.querySelector('#client-log'),
+    rcLog: document.querySelector('#rc-log')
   },
 
   receiveMessage: function(logType, msg)
