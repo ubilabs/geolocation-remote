@@ -24,8 +24,9 @@ var RemoteComm = Model({
   },
 
   postMessageReceive: function(data) {
-    if (event.origin !== window.location.origin)
+    if (event.origin !== window.location.origin) {
       return;
+    }
 
     this.onMessageReceived(event.data);
   },
