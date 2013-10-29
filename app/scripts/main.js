@@ -1,4 +1,4 @@
-var remote = remote || {};
+var remote = remote || {};
 
 remote.log = new RemoteLog();
 remote.app = new App();
@@ -33,7 +33,9 @@ function remoteLog (msg) {
  */
 function initEvents() {
   remote.app.on('appPosition:init', remote.map.addCenter);
-  remote.app.on('appPosition:init', remote.webapp.updateIframe);
+  if (remote.defaults.iFrame) {
+    remote.app.on('appPosition:init', remote.webapp.updateIframe);
+  }
 
   remote.controls.on('place:changed', remote.route.updateRoutePlaces);
   remote.controls.on('speed:changed', remote.route.updateSpeed);
