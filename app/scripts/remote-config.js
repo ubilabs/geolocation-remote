@@ -3,7 +3,7 @@ var remote = {};
 remote.defaults = {
   distance: 1000,
   angle: 45,
-  iFrame: false
+  iFrame: true
 };
 
 remote.pusherConfig = {
