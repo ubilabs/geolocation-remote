@@ -19,6 +19,7 @@ var WebAppModel = Model({
         longitude: remote.app.position.longitude,
         accuracy: remote.route.driving.accuracy
       },
+      speed: remote.controls.speed,
       timestamp: new Date().getTime()
     }
 

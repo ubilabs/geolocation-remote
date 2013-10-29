@@ -1,5 +1,6 @@
 // The control elements in the remote
 var ControlsModel = Model({
+  speed: 0,
   init: function() {
     this.$controls = $('#controls');
     this.$controlItems = this.$controls.find('.control-item');
@@ -15,6 +16,10 @@ var ControlsModel = Model({
     this.$setSearchQuery = this.$controls.find('.set-webapp');
 
     this.$speedSlider.on('change', this.updateSpeed);
+    this.$speedSlider.on('mouseup', function () {
+      this.trigger('control:changed');
+    }.bind(this));
+
     this.$accuracySlider.on('change', this.updateAccuracy);
     this.$driveButton.on('click', this.onDriveButtonClick);
     this.$resetButton.on('click', this.onResetButtonClick);
@@ -82,10 +87,11 @@ var ControlsModel = Model({
   },
 
   updateSpeed: function() {
-    var speed = this.$speedSlider.val();
+    this.speed = this.$speedSlider.val();
+    console.log(this.speed)
 
-    this.$speedDisplay.html(speed);
-    this.trigger('speed:changed', {speed: speed});
+    this.$speedDisplay.html(this.speed);
+    this.trigger('speed:changed', {speed: this.speed});
   },
 
   updateAccuracy: function() {

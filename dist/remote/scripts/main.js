@@ -1,4 +1,4 @@
-var remote = remote || {};
+var remote = remote || {};
 
 remote.log = new RemoteLog();
 remote.app = new App();

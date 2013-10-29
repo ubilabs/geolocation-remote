@@ -34,7 +34,7 @@ var MapModel = Model({
    */
   addCenter: function(position) {
 
-    position = position || remote.app.position;
+    position = position || remote.app.position;
 
     this.latLng = new google.maps.LatLng(position.latitude, position.longitude);
     this.map.setCenter(this.latLng);
@@ -94,7 +94,7 @@ var MapModel = Model({
 
   updateCenter: function(data, centerMap) {
 
-    data = data || this;
+    data = data || this;
     var heading = google.maps.geometry.spherical.computeHeading(this.latLng, data.latLng);
 
     this.latLng = data.latLng,

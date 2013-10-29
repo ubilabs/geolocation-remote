@@ -8,9 +8,6 @@ var App = Model({
     "longitude": 9.96
   },
 
-  init: function() {
-  },
-
   getPosition: function () {
     // get current pos from real navigator or use backup
     navigator.geolocation.getCurrentPosition(this.getPosSuccess, this.getPosError);
