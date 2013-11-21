@@ -8,5 +8,5 @@ remote.defaults = {
 
 remote.pusherConfig = {
   authEndpoint: 'http://localhost:5000/pusher/auth',
-  KEY: KEY
+  KEY: 'KEY'
 };

@@ -1,4 +1,6 @@
 app/bower_components
+app/pusher/pusher-config.js
+app/scripts/remote-config.js
 node_modules
 .DS_Store
 .sass-cache
