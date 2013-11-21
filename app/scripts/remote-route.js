@@ -1,5 +1,7 @@
+window.remote = window.remote || {};
+
 // The route to drive along
-var RouteModel = Model({
+remote.RouteModel = new Model({
   init: function() {
     this.route = {};
     this.driving = {};
@@ -7,7 +9,8 @@ var RouteModel = Model({
   },
 
   onRouteChange: function(data) {
-    if (data.directions && data.directions.routes && data.directions.routes.length) {
+    if (data.directions && data.directions.routes &&
+        data.directions.routes.length) {
       this.updateRoute(data.directions.routes[0]);
     }
   },
@@ -52,7 +55,7 @@ var RouteModel = Model({
       this.resetDriving();
 
     }, this));
-    
+
   },
 
   updateRoute: function(routeDetails) {
@@ -72,7 +75,8 @@ var RouteModel = Model({
   },
 
   calculateStepDistances: function() {
-    var previous, previousPosition;
+    var computeDistance = google.maps.geometry.spherical.computeDistanceBetween,
+      previous, previousPosition;
 
     this.route.distance = {
       steps: [],
@@ -83,17 +87,17 @@ var RouteModel = Model({
       previous = ((i - 1) < 0) ? 0 : i - 1;
       previousPosition = this.route.path[previous];
 
-      this.route.distance.steps[i] = google.maps.geometry.spherical.computeDistanceBetween(
+      this.route.distance.steps[i] = computeDistance(
         position,
         previousPosition
       );
 
-      this.route.distance.total = this.route.distance.total + this.route.distance.steps[i];
+      this.route.distance.total = this.route.distance.total +
+        this.route.distance.steps[i];
     }, this));
   },
 
   resetDriving: function() {
-
     if (this.route.path) {
       this.trigger('marker:update', {latLng: this.route.path[0]});
     }
@@ -117,7 +121,6 @@ var RouteModel = Model({
   },
 
   drive: function() {
-
     var time = new Date(),
       timeDelta = time - this.driving.time,
       progressDelta = this.driving.speed / (60 * 60 * 1000) * timeDelta * 1000,
@@ -131,8 +134,14 @@ var RouteModel = Model({
     }
 
     newPosition = this.getNewPosition(newProgress);
-    
-    this.trigger('marker:update', {latLng: newPosition, accuracy: this.driving.accuracy});
+
+    this.trigger(
+      'marker:update',
+      {
+        latLng: newPosition,
+        accuracy: this.driving.accuracy
+      }
+    );
 
     this.driving.time = time;
     this.driving.progress = newProgress;
@@ -140,10 +149,10 @@ var RouteModel = Model({
 
   getNewPosition: function(newProgress) {
     var distance = 0,
-      previousStep, nextStep, previousStepProgress, progressFromPrevious, newPosition;
+      previousStep, nextStep, previousStepProgress, progressFromPrevious,
+      newPosition;
 
     _.each(this.route.distance.steps, _.bind(function(step, i) {
-
       distance = distance + step;
       i = parseInt(i, 10);
 
@@ -157,7 +166,11 @@ var RouteModel = Model({
       }
     }, this));
 
-    newPosition = this.calculatePosition(progressFromPrevious, previousStep, nextStep);
+    newPosition = this.calculatePosition(
+      progressFromPrevious,
+      previousStep,
+      nextStep
+    );
 
     if (this.driving.accuracy) {
       newPosition = this.applyAccuracy(newPosition);
@@ -167,7 +180,10 @@ var RouteModel = Model({
   },
 
   calculatePosition: function(progressFromPrevious, previousStep, nextStep) {
-    var heading = google.maps.geometry.spherical.computeHeading(previousStep, nextStep),
+    var heading = google.maps.geometry.spherical.computeHeading(
+        previousStep,
+        nextStep
+      ),
       position = google.maps.geometry.spherical.computeOffset(
         previousStep,
         progressFromPrevious,

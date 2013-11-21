@@ -1,9 +1,9 @@
-var Pois = Model({
+window.remote = window.remote || {};
 
+remote.Pois = new Model({
   contentString: '',
 
-  init: function (poi, map) {
-
+  init: function(poi, map) {
     this.map = map.map;
     this.poi = poi;
     this.infoWindow = map.infoWindow;
@@ -15,8 +15,16 @@ var Pois = Model({
 
     this.addPoiInfo();
 
-    google.maps.event.addListener(this.poiMarker, 'mouseover', this.openPoiInfo);
-    google.maps.event.addListener(this.poiMarker, 'mouseout', this.closePoiInfo);
+    google.maps.event.addListener(
+      this.poiMarker,
+      'mouseover',
+      this.openPoiInfo
+    );
+    google.maps.event.addListener(
+      this.poiMarker,
+      'mouseout',
+      this.closePoiInfo
+    );
 
     return this.poiMarker;
   },
@@ -25,23 +33,23 @@ var Pois = Model({
     this.poiMarker.setMap(null);
   },
 
-  addPoiInfo: function () {
-    _.each(this.poi, function (value, key) {
-      this.contentString += key + ": " + value + "<br />";
-    })
+  addPoiInfo: function() {
+    _.each(this.poi, function(value, key) {
+      this.contentString += key + ': ' + value + '<br />';
+    });
 
     console.log(this.contentString);
   },
 
-  openPoiInfo: function () {
-    console.log('hver')
+  openPoiInfo: function() {
+    console.log('hver');
     this.infoWindow.setContent(this.contentString);
     this.infoWindow.setPosition(this.poiMarker.getPosition());
 
     this.infoWindow.open(this.map);
   },
 
-  closePoiInfo: function () {
+  closePoiInfo: function() {
     this.infoWindow.close();
   }
 });
