@@ -53,8 +53,6 @@ window.geolocationRemote = function(connect) {
       data = data.data;
     }
 
-    position = data.position;
-
     errorCode = data.error || errorCode;
     errorCode = parseInt(errorCode, 10);
 
@@ -66,7 +64,7 @@ window.geolocationRemote = function(connect) {
 
     // let's update the watching webapp success callback
     // if we have position data and no error and no online value
-    if (position && errorCode < 0) {
+    if (data.position && errorCode < 0) {
       updateWatchers();
     } else if (data.error) {
       onPositionError();
