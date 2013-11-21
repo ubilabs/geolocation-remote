@@ -48,13 +48,15 @@ window.updatePosition = function(position) {
 };
 
 // check if online or not
-setInterval(function() {
-  if (window.navigator.onLine) {
-    onlineDiv.innerHTML = 'online';
-  } else {
-    onlineDiv.innerHTML = 'offline';
-  }
-}, 1000);
+if (onlineDiv) {
+  setInterval(function() {
+    if (window.navigator.onLine) {
+      onlineDiv.innerHTML = 'online';
+    } else {
+      onlineDiv.innerHTML = 'offline';
+    }
+  }, 1000);
+}
 
 // overwrite console.log
 window.konsole = console;
@@ -85,10 +87,30 @@ if (watchButton) {
   watchButton.addEventListener('click', window.testWatchPosition);
 }
 
+// add data to remote control. This is a way to remote control the remote
+// control for poi data we need at least latitude and longitude values in the
+// object. everything else is shown in the infowindow for each poi
+
+// data = {
+//  pois: [
+//    {
+//       'latitude': 53.624603,
+//       'longitude': 10.08484,
+//       'address_street': 'B434 Bramfelder Chaussee 423',
+//       'id': 752392,
+//     }
+//   ],
+//   options: {
+//     distance: 500
+//   }
+// }
+window.sendPois = function(data) {
+  navigator.geolocation.sendToRemote(data);
+};
+
 // add here what you need you app to do after the fake navigator is loaded
 // i.e. restart the watchPosition function
 // send poi infomations to the remote control
-
 
 // app.init(); // maybe this one calls watchPosition()
 
@@ -139,24 +161,3 @@ if (navigator.geolocation.sendToRemote) {
 
   window.sendPois(data);
 }
-
-// add data to remote control. This is a way to remote control the remote
-// control for poi data we need at least latitude and longitude values in the
-// object. everything else is shown in the infowindow for each poi
-
-// data = {
-//  pois: [
-//    {
-//       'latitude': 53.624603,
-//       'longitude': 10.08484,
-//       'address_street': 'B434 Bramfelder Chaussee 423',
-//       'id': 752392,
-//     }
-//   ],
-//   options: {
-//     distance: 500
-//   }
-// }
-window.sendPois = function(data) {
-  navigator.geolocation.sendToRemote(data);
-};
