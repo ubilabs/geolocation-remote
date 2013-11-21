@@ -1,10 +1,7 @@
 var debugDivs = ['log', 'position', 'error', 'online'],
   debugContainer = document.createElement('div'),
-  positionDiv = document.getElementById('position'),
-  logDiv = document.getElementById('log'),
-  errorDiv = document.getElementById('error'),
   watchId = '',
-  div, elem;
+  div, elem, positionDiv, logDiv, errorDiv, onlineDiv;
 
 debugContainer.id = 'debug';
 document.body.appendChild(debugContainer);
@@ -15,6 +12,11 @@ for (var i = debugDivs.length - 1; i >= 0; i--) {
   elem.id = div;
   debugContainer.appendChild(elem);
 }
+
+positionDiv = document.getElementById('position');
+logDiv = document.getElementById('log');
+errorDiv = document.getElementById('error');
+onlineDiv = document.getElementById('online');
 
 window.testGetCurrentPosition = function() {
   navigator.geolocation.getCurrentPosition(window.success, window.error);
@@ -46,23 +48,37 @@ window.updatePosition = function(position) {
   positionDiv.innerHTML = msg;
 };
 
-// overwrite console.log
-window.konsole = console;
+/**
+ * check if online or not
+ */
+setInterval(function() {
+  if (window.navigator.onLine) {
+    onlineDiv.innerHTML = 'online';
+  } else {
+    onlineDiv.innerHTML = 'offline';
+  }
+}, 1000);
 
+/**
+ * overwrite console.log
+ */
+window.konsole = console;
 window.console = {
   log: function(log) {
-    var data = {log: log};
+    var data = {
+      log: log
+    };
 
     logDiv.innerHTML += '<div class="log-message">' + log + ' ' +
       new Date().toISOString() + '</div>';
-
-    window.konsole.log(log);
 
     parent.postMessage(data, window.location.origin + '/remote');
   }
 };
 
-// add click event listener
+/**
+ * add click event listener
+ */
 var currentButton = document.getElementsByClassName('get-current-position')[0];
 
 if (currentButton) {

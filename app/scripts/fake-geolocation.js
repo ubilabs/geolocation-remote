@@ -42,16 +42,11 @@ window.geolocationRemote = function(connect) {
     }
 
     if (connect === 'iframe') {
-      data = {data: data};
       parent.postMessage(data, window.location.origin + '/remote');
     }
   }
 
   function onDataReceived(data) {
-    if (connect === 'iframe') {
-      data = data.data;
-    }
-
     errorCode = data.error || errorCode;
     errorCode = parseInt(errorCode, 10);
 

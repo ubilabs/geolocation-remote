@@ -54,9 +54,7 @@ remote.Communication = new Model({
       return;
     }
 
-    console.log('Limo', event.data);
-
-    var data = event.data.data;
+    var data = event.data;
 
     this.handleLogData(data);
     this.handlePositionData(data);
