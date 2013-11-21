@@ -1,46 +1,53 @@
-var App = Model({
+window.remote = window.remote || {};
 
+remote.App = new Model({
   error: -1,
   onLine: true,
 
   defaultPosition: {
-    "latitude": 53.56,
-    "longitude": 9.96
+    'latitude': 53.56,
+    'longitude': 9.96
   },
 
-  getPosition: function () {
+  getPosition: function() {
     // get current pos from real navigator or use backup
-    navigator.geolocation.getCurrentPosition(this.getPosSuccess, this.getPosError);
+    navigator.geolocation.getCurrentPosition(
+      this.getPosSuccess,
+      this.getPosError
+    );
   },
 
-  getPosSuccess: function (position) {
+  getPosSuccess: function(position) {
     this.position = {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     };
 
-    remoteLog('appPosition:init');
+    remote.remoteLog('appPosition:init');
     this.trigger('appPosition:init');
   },
 
-  getPosError: function () {
-    this.position = this.defaultPosition
+  getPosError: function() {
+    this.position = this.defaultPosition;
 
-    remoteLog('appPosition:init');
+    remote.remoteLog('appPosition:init');
     this.trigger('appPosition:init');
   },
 
-  updatePosition: function (latLng) {
+  updatePosition: function(latLng) {
     this.position = {
       latitude: latLng.lat(),
       longitude: latLng.lng()
     };
   },
 
-  onDataReceived: function (data) {
-
+  onDataReceived: function(data) {
     if (data.position) {
-      data.latLng = new google.maps.LatLng(data.position.lat, data.position.lng);
+      data.latLng = new google.maps.LatLng(
+        data.position.lat,
+        data.position.lng
+      );
+
       remote.map.updateCenter(data, true);
     }
 
@@ -56,11 +63,10 @@ var App = Model({
     }
 
     if (data.options) {
-      for (var key in data.options) {
-        remote.defaults[key] = data.options[key];
-      }
+      _.each(data.options, function(value, key) {
+        remote.defaults[key] = value;
+      });
       remote.map.updateCenter();
     }
   }
-
-})
+});

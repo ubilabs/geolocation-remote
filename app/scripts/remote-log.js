@@ -1,5 +1,6 @@
-var RemoteLog = Model({
+window.remote = window.remote || {};
 
+remote.RemoteLog = new Model({
   logQueue: {},
   logContainers: {
     clientLog: document.querySelector('#client-log'),
@@ -15,10 +16,10 @@ var RemoteLog = Model({
   addToLogQueue: function(logType, msg) {
     var logQueue = this.logQueue[logType] || [];
 
-    logQueue.push(msg.substring(0,200));
+    logQueue.push(msg.substring(0, 200));
 
-    if (logQueue.length>=4) {
-      logQueue = logQueue.slice(1, 4)
+    if (logQueue.length >= 4) {
+      logQueue = logQueue.slice(1, 4);
     }
 
     this.logQueue[logType] = logQueue;
@@ -26,12 +27,13 @@ var RemoteLog = Model({
 
   updateLog: function(logType) {
     var logDiv = this.logContainers[logType],
-      logQueue = this.logQueue[logType];
+      logQueue = this.logQueue[logType],
+      i;
 
     logDiv.innerHTML = '';
 
-    for (var i = logQueue.length - 1; i >= 0; i--) {
+    for (i = logQueue.length - 1; i >= 0; i--) {
       logDiv.innerHTML += '<div class="log-message">' + logQueue[i] + '</div>';
-    };
+    }
   }
 });

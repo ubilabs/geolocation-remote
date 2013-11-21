@@ -1,9 +1,11 @@
-var RemoteComm = Model({
-  init: function () {
+window.remote = window.remote || {};
+
+remote.RemoteComm = new Model({
+  init: function() {
     this.socketSetup();
   },
 
-  sendToClients: function (data) {
+  sendToClients: function(data) {
     if (this.channel) {
       this.channel.trigger('client-locationUpdate', data);
     }
@@ -13,17 +15,16 @@ var RemoteComm = Model({
     }
   },
 
-  onMessageReceived: function (data) {
-
+  onMessageReceived: function(data) {
     if (data.log) {
-      remote.log.receiveMessage('clientLog', data.log)
+      remote.log.receiveMessage('clientLog', data.log);
     } else {
-      remote.app.onDataReceived(data.data)
+      remote.app.onDataReceived(data.data);
     }
 
   },
 
-  postMessageReceive: function(data) {
+  postMessageReceive: function() {
     if (event.origin !== window.location.origin) {
       return;
     }
@@ -31,23 +32,20 @@ var RemoteComm = Model({
     this.onMessageReceived(event.data);
   },
 
-  iframeSetup: function () {
+  iframeSetup: function() {
     this.$iframe = document.querySelector('#webapp');
-    window.addEventListener("message", this.postMessageReceive, false);
+    window.addEventListener('message', this.postMessageReceive, false);
   },
 
-  socketSetup: function () {
+  socketSetup: function() {
     var pusher = new Pusher(remote.pusherConfig.KEY, {
-      authEndpoint: remote.pusherConfig.authEndpoint
-    });
-
-    var channel = pusher.subscribe('private-remoteLocationManager');
+        authEndpoint: remote.pusherConfig.authEndpoint
+      }),
+      channel = pusher.subscribe('private-remoteLocationManager');
 
     channel.bind('pusher:subscription_succeeded', function() {
       this.channel = channel;
     }.bind(this));
-
-    var listenChannel = pusher.subscribe('remoteLocationManager');
 
     channel.bind('locationUpdate', function(data) {
       alert('An event was triggered with message: ' + data.message);

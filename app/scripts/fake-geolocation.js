@@ -1,6 +1,8 @@
-function geolocationRemote(connect){
-
-    // here we store our watchers (There is only one real watcher but if we call getCurrentPosition we create a new one so we need a place to store two watchers ...)
+/* jshint maxstatements:20 */
+window.geolocationRemote = function(connect) {
+  // here we store our watchers (There is only one real watcher but
+  // if we call getCurrentPosition we create a new one so we need
+  // a place to store two watchers ...)
   var watchers = [],
     // watcher ID
     id = 0,
@@ -14,29 +16,28 @@ function geolocationRemote(connect){
       1: 'PERMISSION_DENIED',
       2: 'POSITION_UNAVAILABLE',
       3: 'TIMEOUT'
-    };
+    },
+    pusher, channel, listenChannel;
 
   if (connect === 'socket') {
-    var pusher = new Pusher(remote.pusherConfig.KEY, {
+    pusher = new Pusher(remote.pusherConfig.KEY, {
       authEndpoint: remote.pusherConfig.authEndpoint
     });
 
-    var channel = pusher.subscribe('private-remoteLocationManager');
-
+    channel = pusher.subscribe('private-remoteLocationManager');
     channel.bind('pusher:subscription_succeeded', onDataReceived);
 
-    var listenChannel = pusher.subscribe('private-remoteLocationManager');
-
+    listenChannel = pusher.subscribe('private-remoteLocationManager');
     listenChannel.bind('client-locationUpdate', function(data) {
       onDataReceived(data);
     });
 
   } else if (connect === 'iframe') {
-    window.addEventListener("message", onDataReceived, false);
+    window.addEventListener('message', onDataReceived, false);
   }
 
 
-  function sendToRemote (data) {
+  function sendToRemote(data) {
     if (connect === 'socket') {
       channel.trigger('client-locationUpdate', data);
     }
@@ -67,21 +68,21 @@ function geolocationRemote(connect){
     // if we have position data and no error and no online value
     if (position && errorCode < 0) {
       updateWatchers();
-    } else if (data.error) { // if there is an error defined we call the error callback
+    } else if (data.error) {
       onPositionError();
     }
   }
 
   // called when we receive an error from the remote control
-  // actually this is called when don't get any position data from the remote control
-  function onPositionError (){
-    for (var watcher in watchers){
-
+  // actually this is called when don't get any position data
+  // from the remote control
+  function onPositionError() {
+    for (var watcher in watchers) {
       watcher = watchers[watcher];
 
       if (watcher.error) {
         watcher.error({
-          code: errorCode*1,
+          code: errorCode * 1,
           message: errorMessages[errorCode]
         });
       }
@@ -89,32 +90,36 @@ function geolocationRemote(connect){
   }
 
   // update watchers. Call the success callback of navigator.watchPosition()
-  function updateWatchers (){
+  function updateWatchers() {
     for (var watcher in watchers) {
       watcher = watchers[watcher];
-      if (watcher.success){ watcher.success(position);}
+      if (watcher.success) {
+        watcher.success(position);
+      }
     }
   }
 
-  // call watch position with success and error callbacks. sometimes even with options
-  function getCurrentPosition (success, error, options){
-    if (position && errorCode < 0){
+  // call watch position with success and error callbacks.
+  // sometimes even with options
+  function getCurrentPosition(success, error) {
+    if (position && errorCode < 0) {
       success(position);
     } else {
       error({
-        code: errorCode*1,
+        code: errorCode * 1,
         message: errorMessages[errorCode]
       });
     }
   }
 
-  // fake watchPosition() used to bind callbacks to our own navigator.geolocation functions
-  function watchPosition (success, error, options){
+  // fake watchPosition() used to bind callbacks to our
+  // own navigator.geolocation functions
+  function watchPosition(success, error) {
     watchers[++id] = { id: id, success: success, error: error };
     return id;
   }
 
-  function clearWatch (id){
+  function clearWatch(id) {
     delete watchers[id];
   }
 
@@ -124,4 +129,4 @@ function geolocationRemote(connect){
     clearWatch: clearWatch,
     sendToRemote: sendToRemote
   };
-}
+};

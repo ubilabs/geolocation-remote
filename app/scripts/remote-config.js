@@ -1,4 +1,4 @@
-var remote = {};
+window.remote = window.remote || {};
 
 remote.defaults = {
   distance: 1000,

@@ -1,14 +1,14 @@
-var remote = remote || {};
+window.remote = window.remote || {};
 
-remote.log = new RemoteLog();
-remote.app = new App();
-remote.map = new MapModel();
-remote.route = new RouteModel();
-remote.controls = new ControlsModel();
-remote.webapp = new WebAppModel();
-remote.comm = new RemoteComm();
+remote.log = new remote.RemoteLog();
+remote.app = new remote.App();
+remote.map = new remote.MapModel();
+remote.route = new remote.RouteModel();
+remote.controls = new remote.ControlsModel();
+remote.webapp = new remote.WebAppModel();
+remote.comm = new remote.RemoteComm();
 
-initEvents();
+remote.initEvents();
 
 remote.controls.enable();
 remote.app.getPosition();
@@ -23,15 +23,16 @@ remote.controls.updateAccuracy();
  * Calls functions to update the logs in the remote control
  * @param  {string} msg   message string
  */
-function remoteLog (msg) {
+remote.remoteLog = function(msg) {
   remote.log.addToLogQueue('rcLog', msg);
-  remote.log.updateLog('rcLog')
-}
+  remote.log.updateLog('rcLog');
+};
 
 /**
  * Initialize the events for remote control
  */
-function initEvents() {
+/* jshint maxstatements:20 */
+remote.initEvents = function() {
   remote.app.on('appPosition:init', remote.map.addCenter);
   if (remote.defaults.iFrame) {
     remote.app.on('appPosition:init', remote.webapp.updateIframe);
@@ -56,4 +57,4 @@ function initEvents() {
   remote.map.on('center:updated', remote.webapp.updateNavigator);
 
   remote.webapp.on('iframe:ready', remote.comm.iframeSetup);
-}
+};
