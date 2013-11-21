@@ -7,8 +7,7 @@ remote.RemoteLog = new Model({
     rcLog: document.querySelector('#rc-log')
   },
 
-  receiveMessage: function(logType, msg)
-  {
+  receiveMessage: function(logType, msg) {
     this.addToLogQueue(logType, msg);
     this.updateLog(logType);
   },
