@@ -1,10 +1,15 @@
 window.remote = window.remote || {};
 
-// The control elements in the remote
-remote.ControlsModel = new Model({
-  speed: 0,
-
+/**
+ * The control elements in the remote
+ */
+remote.Controls = new Model({
+  /**
+   * Initialize
+   */
   init: function() {
+    this.speed = 0;
+
     this.$controls = $('#controls');
     this.$controlItems = this.$controls.find('.control-item');
 
@@ -30,7 +35,7 @@ remote.ControlsModel = new Model({
   initEvents: function() {
     this.$speedSlider.on('change', this.updateSpeed);
     this.$speedSlider.on('mouseup', function() {
-      this.trigger('control:changed');
+      this.trigger('control:change');
     }.bind(this));
 
     this.$accuracySlider.on('change', this.updateAccuracy);
@@ -41,37 +46,51 @@ remote.ControlsModel = new Model({
     this.$setSearchQuery.on('click', this.updateSearchQuery);
   },
 
+  /**
+   * Enable the control items
+   */
   enable: function() {
-    _.each(this.$controlItems, this.enableControl);
+    _.each(this.$controlItems, function(element) {
+      $(element).removeAttr('disabled');
+    });
   },
 
-  enableControl: function(e) {
-    $(e).removeAttr('disabled');
-  },
-
+  /**
+   * Disable the control items
+   */
   disable: function() {
-    _.each(this.$controlItems, this.disableControl);
+    _.each(this.$controlItems, function(element) {
+      $(element).attr('disabled', 'disabled');
+    });
   },
 
-  disableControl: function(e) {
-    $(e).attr('disabled', 'disabled');
-  },
-
+  /**
+   * Update the online status
+   */
   setOnline: function() {
     var isOnline = $(event.target).is(':checked');
-    remote.onLine = isOnline;
 
-    this.trigger('control:changed');
+    remote.onLine = isOnline;
+    this.trigger('control:change');
   },
 
+  /**
+   * Update whether there is a GPS error or not
+   * @param {Event} event The JQuery Event
+   */
   setGpsError: function(event) {
     event.preventDefault();
-    var errorType = $(event.target).find(':selected').val();
-    remote.error = errorType;
 
-    this.trigger('control:changed');
+    var errorType = $(event.target).find(':selected').val();
+
+    remote.error = errorType;
+    this.trigger('control:change');
   },
 
+  /**
+   * When the drive button got clicked
+   * @param  {Event} event The JQuery Event
+   */
   onDriveButtonClick: function(event) {
     event.preventDefault();
 
@@ -82,36 +101,55 @@ remote.ControlsModel = new Model({
     }
   },
 
+  /**
+   * When the reset button got clicked
+   * @param  {Event} event The JQuery Event
+   */
   onResetButtonClick: function(event) {
     event.preventDefault();
 
     this.trigger('drive:reset');
   },
 
-  onDriveStarted: function() {
+  /**
+   * Update the drive button on drive start
+   */
+  onDriveStart: function() {
     this.$driveButton.removeClass().addClass('button cancel icon-pause');
   },
 
-  onDriveStopped: function() {
+  /**
+   * Update the drive button on drive stop
+   */
+  onDriveStop: function() {
     this.$driveButton.removeClass().addClass('button icon-play');
   },
 
+  /**
+   * Update the speed when it got changed
+   */
   updateSpeed: function() {
     this.speed = this.$speedSlider.val();
-    console.log(this.speed);
 
     this.$speedDisplay.html(this.speed);
-    this.trigger('speed:changed', {speed: this.speed});
+    this.trigger('speed:change', this.speed);
   },
 
+  /**
+   * Update the accuracy when it got changed
+   */
   updateAccuracy: function() {
     var accuracy = this.$accuracySlider.val();
 
     this.$accuracyDisplay.html(accuracy);
-    this.trigger('accuracy:changed', {accuracy: accuracy});
-    this.trigger('accuracy:changed');
+    this.trigger('accuracy:change', accuracy);
   },
 
+  /**
+   * Initialize the autocomplete for the passed element
+   * @param  {google.maps.Map} map The map to use
+   * @param  {String} elemId  The id of the autocomplete element
+   */
   initAutocomplete: function(map, elemId) {
     var input = document.getElementById(elemId),
       autocomplete = new google.maps.places.Autocomplete(input);
@@ -122,7 +160,7 @@ remote.ControlsModel = new Model({
       autocomplete,
       'place_changed',
       _.bind(function() {
-        this.trigger('place:changed', {
+        this.trigger('place:change', {
           type: elemId,
           place: autocomplete.getPlace()
         });
@@ -131,12 +169,15 @@ remote.ControlsModel = new Model({
     );
   },
 
+  /**
+   * When the search query got updated
+   */
   updateSearchQuery: function() {
     var $webappControl = $('.webapp'),
     $webappUrlInput = $webappControl.find('.url');
 
-    $('.set-webapp').on('click', function() {
-      this.trigger('searchQuery:changed', $webappUrlInput.val());
-    }.bind(this));
+    $('.set-webapp').on('click', _.bind(function() {
+      this.trigger('searchQuery:change', $webappUrlInput.val());
+    }, this));
   }
 });

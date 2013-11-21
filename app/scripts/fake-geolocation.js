@@ -31,7 +31,6 @@ window.geolocationRemote = function(connect) {
     listenChannel.bind('client-locationUpdate', function(data) {
       onDataReceived(data);
     });
-
   } else if (connect === 'iframe') {
     window.addEventListener('message', onDataReceived, false);
   }

@@ -3,7 +3,6 @@ var debugDivs = ['log', 'position', 'error', 'online'],
   positionDiv = document.getElementById('position'),
   logDiv = document.getElementById('log'),
   errorDiv = document.getElementById('error'),
-  onlineDiv = document.getElementById('online'),
   watchId = '',
   div, elem;
 
@@ -46,17 +45,6 @@ window.updatePosition = function(position) {
   var msg = '<div class="log-message">' + JSON.stringify(position) + '</div>';
   positionDiv.innerHTML = msg;
 };
-
-// check if online or not
-if (onlineDiv) {
-  setInterval(function() {
-    if (window.navigator.onLine) {
-      onlineDiv.innerHTML = 'online';
-    } else {
-      onlineDiv.innerHTML = 'offline';
-    }
-  }, 1000);
-}
 
 // overwrite console.log
 window.konsole = console;
@@ -115,10 +103,8 @@ window.sendPois = function(data) {
 // app.init(); // maybe this one calls watchPosition()
 
 if (navigator.geolocation.sendToRemote) {
-
   // You may want to add your own initial center marker. do it here
   // You can set options too
-
   navigator.geolocation.sendToRemote({
     position: {
       lat: 53.580973,
@@ -154,6 +140,7 @@ if (navigator.geolocation.sendToRemote) {
         'address_street': 'Julius Strasse 25, Hamburg'
       }
     ],
+    log: 'Sent pois',
     options: {
       distance: 500
     }

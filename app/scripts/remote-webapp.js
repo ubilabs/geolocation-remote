@@ -1,12 +1,20 @@
 window.remote = window.remote || {};
 
-remote.WebAppModel = new Model({
-  marker: {},
-  iframe: '',
+/**
+ * The Web app
+ */
+remote.WebApp = new Model({
+  /**
+   * Initialize
+   */
+  init: function() {
+    this.marker = {};
+    this.iframe = '';
+  },
 
   /**
    * Prepare data for fake navigator of the clients
-   * @param  {json} data
+   * @param  {Object} data
    */
   updateNavigator: function(data) {
     data = data || {};
@@ -24,9 +32,8 @@ remote.WebAppModel = new Model({
       timestamp: new Date().getTime()
     };
 
-    remote.remoteLog('update:navigator' + JSON.stringify(data));
-
-    remote.comm.sendToClients(data);
+    remote.log.rc('navigator:update' + JSON.stringify(data));
+    remote.communication.sendToClients(data);
   },
 
   /**
@@ -76,7 +83,7 @@ remote.WebAppModel = new Model({
     $('.webapp .url').val(search);
 
     // set src attr to iframe
-    this.iframe.setAttribute('onload', 'remote.webapp.injectJavascript()');
+    this.iframe.setAttribute('onload', 'remote.webApp.injectJavascript()');
     this.iframe.src = href;
 
     this.trigger('iframe:ready');
