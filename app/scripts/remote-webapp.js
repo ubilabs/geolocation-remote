@@ -95,7 +95,6 @@ remote.WebApp = new Model({
   injectJavascript: function() {
     var script,
       jsLibs = [
-        'remote/scripts/fake-geolocation.js',
         'remote/scripts/fake-navigator.js',
         'remote/scripts/client-scripts.js'
       ];

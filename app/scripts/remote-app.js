@@ -62,7 +62,7 @@ remote.App = new Model({
    * Get the current position
    */
   getPosition: function() {
-    navigator.geolocation.getCurrentPosition(
+    window.navigator.geolocation.getCurrentPosition(
       this.onPositionSuccess,
       this.onPositionError
     );
