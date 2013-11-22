@@ -1,14 +1,23 @@
-var WebAppModel = Model({
+window.remote = window.remote || {};
 
-  marker: {},
-  iframe: '',
+/**
+ * The Web app
+ */
+remote.WebApp = new Model({
+  /**
+   * Initialize
+   */
+  init: function() {
+    this.marker = {};
+    this.iframe = '';
+  },
 
   /**
    * Prepare data for fake navigator of the clients
-   * @param  {json} data
+   * @param  {Object} data
    */
   updateNavigator: function(data) {
-    var data = data || {};
+    data = data || {};
 
     data.error = remote.error;
     data.onLine = remote.onLine;
@@ -19,18 +28,18 @@ var WebAppModel = Model({
         longitude: remote.app.position.longitude,
         accuracy: remote.route.driving.accuracy
       },
+      speed: remote.controls.speed,
       timestamp: new Date().getTime()
-    }
+    };
 
-    remoteLog('update:navigator' + JSON.stringify(data));
-
-    remote.comm.sendToClients(data);
+    remote.log.rc('navigator:update' + JSON.stringify(data));
+    remote.communication.sendToClients(data);
   },
 
   /**
    * Add an iFrame to the remote control for the webapp
    */
-  addIframe: function () {
+  addIframe: function() {
     this.iframe = document.createElement('iframe');
     this.iframe.id = 'webapp';
 
@@ -40,7 +49,7 @@ var WebAppModel = Model({
   /**
    * Removes the iFrame from remote control
    */
-  removeIframe: function () {
+  removeIframe: function() {
     this.iframe.parentNode.removeChild(this.iframe);
     this.iframe = '';
   },
@@ -50,6 +59,7 @@ var WebAppModel = Model({
    * @param  {string} query it's used as the query string of the iframe url
    */
   updateIframe: function(query) {
+    var search, href;
 
     if (this.iframe.tagName) {
       this.removeIframe();
@@ -57,13 +67,14 @@ var WebAppModel = Model({
 
     this.addIframe();
 
-    // prevent me (the remote) from getting framed all over again and again and again ...
+    // prevent me (the remote) from getting framed
+    // all over again and again and again ...
     if (window != window.top) {
       return;
     }
 
-    var search = query || '?embed=true&' + window.location.search.replace('?','');
-    var href = window.location.href.replace('/remote', '')  + search;
+    search = query || '?embed=true&' + window.location.search.replace('?', '');
+    href = window.location.href.replace('/remote', '')  + search;
 
     // set http if not
     href = (/^(http||https):\/\//.test(href)) ? href : 'http://' + href;
@@ -72,7 +83,7 @@ var WebAppModel = Model({
     $('.webapp .url').val(search);
 
     // set src attr to iframe
-    this.iframe.setAttribute('onload','remote.webapp.injectJavascript()');
+    this.iframe.setAttribute('onload', 'remote.webApp.injectJavascript()');
     this.iframe.src = href;
 
     this.trigger('iframe:ready');
@@ -82,22 +93,17 @@ var WebAppModel = Model({
    * Injecting the nessasary js files in the client app
    */
   injectJavascript: function() {
+    var script,
+      jsLibs = [
+        'remote/scripts/fake-navigator.js',
+        'remote/scripts/client-scripts.js'
+      ];
 
-    var script;
-
-    var jsLibs = [
-      'remote/scripts/fake-geolocation.js',
-      'remote/scripts/fake-navigator.js',
-      'remote/scripts/client-scripts.js'
-    ]
-
-    _.each(jsLibs, function (src) {
-
-      script = this.iframe.contentWindow.document.createElement("script");
-      script.type = "text/javascript";
+    _.each(jsLibs, function(src) {
+      script = this.iframe.contentWindow.document.createElement('script');
+      script.type = 'text/javascript';
       script.src = src;
       this.iframe.contentWindow.document.body.appendChild(script);
-
     }, this);
   }
 });

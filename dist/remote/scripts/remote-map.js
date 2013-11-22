@@ -1,17 +1,33 @@
-// Map to visualize blitzes and center
-var MapModel = Model({
+window.remote = window.remote || {};
+
+/**
+ * Map to visualize pois and position of user
+ */
+remote.Map = new Model({
+  /**
+   * Map options
+   * @type {Object}
+   */
   mapOptions: {
     zoom: 14,
     center: new google.maps.LatLng(53.580973, 10.0008938),
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     keyboardShortcuts: false
   },
+
+  /**
+   * Icon for the user
+   * @type {Object}
+   */
   icons: {
     center: 'images/geolocation-icon.png'
   },
-  pois: [],
 
+  /**
+   * Initialize
+   */
   init: function() {
+    this.pois = [];
 
     this.map = new google.maps.Map(
       document.getElementById('map_canvas'),
@@ -25,16 +41,19 @@ var MapModel = Model({
 
     this.infoWindow = new google.maps.InfoWindow();
 
-    google.maps.event.addListener(this.directionsDisplay, 'directions_changed', this.updateDirection);
+    google.maps.event.addListener(
+      this.directionsDisplay,
+      'directions_changed',
+      this.updateDirection
+    );
   },
 
   /**
    * Add the center marker to the map with the given position
-   * @param  {object} position position object with at least valid latitude and longitude keys
+   * @param  {object} position object with at least valid lat and lng
    */
   addCenter: function(position) {
-
-    position = position || remote.app.position;
+    position = position || remote.app.position;
 
     this.latLng = new google.maps.LatLng(position.latitude, position.longitude);
     this.map.setCenter(this.latLng);
@@ -44,7 +63,7 @@ var MapModel = Model({
       icon:  {
         url: this.icons.center,
         size: new google.maps.Size(32, 32),
-        origin: new google.maps.Point(0,0),
+        origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(16, 16),
         scaledSize: new google.maps.Size(32, 32)
       },
@@ -53,7 +72,11 @@ var MapModel = Model({
       position: this.latLng
     });
 
-    google.maps.event.addListener(this.centerMarker, "dragend", this.updateCenter);
+    google.maps.event.addListener(
+      this.centerMarker,
+      'dragend',
+      this.updateCenter
+    );
 
     this.centerViewDistance = new google.maps.Circle({
       center: this.latLng,
@@ -89,16 +112,26 @@ var MapModel = Model({
         )]
     });
 
-    this.trigger('center:added');
+    this.trigger('center:add');
   },
 
+  /**
+   * Update the center position of the user
+   * @param  {?Object} data       Containing the new center position
+   * @param  {Boolean} centerMap  Whether center or not
+   * @return {[type]}           [description]
+   */
   updateCenter: function(data, centerMap) {
+    var offset = google.maps.geometry.spherical.computeOffset,
+      heading;
 
-    data = data || this;
-    var heading = google.maps.geometry.spherical.computeHeading(this.latLng, data.latLng);
+    data = data || this;
 
-    this.latLng = data.latLng,
-      offset = google.maps.geometry.spherical.computeOffset;
+    heading = google.maps.geometry.spherical.computeHeading(
+      this.latLng, data.latLng
+    );
+
+    this.latLng = data.latLng;
 
     if (centerMap) {
       this.map.setCenter(this.latLng);
@@ -122,37 +155,55 @@ var MapModel = Model({
     )]);
 
     remote.app.updatePosition(this.latLng);
-    this.trigger('center:updated');
+    this.trigger('center:update');
   },
 
-  updateDirection: function () {
-    this.trigger('route:changed', this.directionsDisplay);
+  /**
+   * The route got changed
+   */
+  updateDirection: function() {
+    var directions = this.directionsDisplay.directions;
+
+    if (directions && directions.routes && directions.routes.length) {
+      this.trigger('route:change', directions.routes[0]);
+    }
   },
 
-  updateRoute: function(data) {
-    var route = data.route;
-
+  /**
+   * Set a new Route
+   * @param  {Object} route The route to set
+   */
+  setRoute: function(route) {
     this.directionsDisplay.setDirections(route);
   },
 
-  addPois: function (data) {
+  /**
+   * Add pois
+   * @param {Array} pois The pois to add
+   */
+  addPois: function(pois) {
     var markerBounds = new google.maps.LatLngBounds();
+
     this.deletePois();
 
     markerBounds.extend(this.latLng);
 
-    _.each(data, _.bind(function (poi) {
-      var marker = new Pois(poi, this);
+    _.each(pois, _.bind(function(data) {
+      var poi = new remote.Poi(data, this);
 
-      markerBounds.extend(marker.poiMarker.getPosition());
-      this.pois.push(marker);
+      markerBounds.extend(poi.poiMarker.getPosition());
+      this.pois.push(poi);
     }, this));
 
     this.map.fitBounds(markerBounds);
   },
 
-  deletePois: function () {
+  /**
+   * Delete the current pois
+   */
+  deletePois: function() {
     _.invoke(this.pois, 'deletePoi');
+
     this.pois = [];
   }
 });

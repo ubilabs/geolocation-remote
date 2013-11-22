@@ -1,69 +1,115 @@
-var App = Model({
+window.remote = window.remote || {};
 
-  error: -1,
-  onLine: true,
-
+/**
+ * The remote app
+ */
+remote.App = new Model({
+  /**
+   * The position to start with
+   * @type {Object}
+   */
   defaultPosition: {
-    "latitude": 53.56,
-    "longitude": 9.96
+    'latitude': 53.56,
+    'longitude': 9.96
   },
 
+  /**
+   * Initialize
+   */
   init: function() {
+    remote.log = new remote.Log();
+    remote.map = new remote.Map();
+    remote.route = new remote.Route();
+    remote.controls = new remote.Controls();
+    remote.webApp = new remote.WebApp();
+    remote.communication = new remote.Communication();
+
+    this.initEvents();
+    this.getPosition();
+
+    remote.controls.enable();
+    remote.controls.updateSpeed();
+    remote.controls.updateAccuracy();
   },
 
-  getPosition: function () {
-    // get current pos from real navigator or use backup
-    navigator.geolocation.getCurrentPosition(this.getPosSuccess, this.getPosError);
+  /**
+   * Initialize events
+   */
+  initEvents: function() {
+    remote.controls.on('place:change', remote.route.updatePlace);
+    remote.controls.on('speed:change', remote.route.updateSpeed);
+    remote.controls.on('accuracy:change', remote.route.updateAccuracy);
+    remote.controls.on('drive:reset', remote.route.resetDriving);
+    remote.controls.on('drive:start', remote.route.startDriving);
+    remote.controls.on('drive:stop', remote.route.stopDriving);
+    remote.controls.on('control:change', remote.webApp.updateNavigator);
+    remote.controls.on('searchQuery:change', remote.webApp.updateIframe);
+
+    remote.route.on('map:center', remote.map.updateCenter);
+    remote.route.on('update', remote.map.setRoute);
+    remote.route.on('marker:update', remote.map.updateCenter);
+    remote.route.on('drive:start', remote.controls.onDriveStart);
+    remote.route.on('drive:stop', remote.controls.onDriveStop);
+
+    remote.map.on('route:change', remote.route.change);
+    remote.map.on('center:add', remote.webApp.updateNavigator);
+    remote.map.on('center:update', remote.webApp.updateNavigator);
+
+    remote.webApp.on('iframe:ready', remote.communication.initIframe);
   },
 
-  getPosSuccess: function (position) {
+  /**
+   * Get the current position
+   */
+  getPosition: function() {
+    window.navigator.geolocation.getCurrentPosition(
+      this.onPositionSuccess,
+      this.onPositionError
+    );
+  },
+
+  /**
+   * When a position got loaded successfully
+   * @param  {Position} position The position data
+   */
+  onPositionSuccess: function(position) {
     this.position = {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     };
 
-    remoteLog('appPosition:init');
-    this.trigger('appPosition:init');
+    this.onPositionUpdate();
   },
 
-  getPosError: function () {
-    this.position = this.defaultPosition
+  /**
+   * When there was an error loading the position
+   */
+  onPositionError: function() {
+    this.position = this.defaultPosition;
 
-    remoteLog('appPosition:init');
-    this.trigger('appPosition:init');
+    this.onPositionUpdate();
   },
 
-  updatePosition: function (latLng) {
+  onPositionUpdate: function() {
+    remote.map.addCenter();
+
+    if (remote.defaults.iFrame) {
+      remote.webApp.updateIframe();
+    }
+
+    remote.log.rc('position:init');
+  },
+
+  /**
+   * Update the current position
+   * @param  {Object} latLng The position data to set
+   */
+  updatePosition: function(latLng) {
     this.position = {
       latitude: latLng.lat(),
       longitude: latLng.lng()
     };
-  },
-
-  onDataReceived: function (data) {
-
-    if (data.position) {
-      data.latLng = new google.maps.LatLng(data.position.lat, data.position.lng);
-      remote.map.updateCenter(data, true);
-    }
-
-    if (data.init) {
-      remote.webapp.updateNavigator();
-      if (data.connect === 'iframe') {
-        delete remote.socket;
-      }
-    }
-
-    if (data.pois) {
-      remote.map.addPois(data.pois);
-    }
-
-    if (data.options) {
-      for (var key in data.options) {
-        remote.defaults[key] = data.options[key];
-      }
-      remote.map.updateCenter();
-    }
   }
+});
 
-})
+remote.app = new remote.App();
