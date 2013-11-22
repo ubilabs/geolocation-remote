@@ -25,15 +25,12 @@ window.geolocationRemote = function(connect) {
     });
 
     channel = pusher.subscribe('private-remoteLocationManager');
-    channel.bind('pusher:subscription_succeeded', onDataReceived);
+    channel.bind('pusher:subscription_succeeded', onMessageReceived);
 
     listenChannel = pusher.subscribe('private-remoteLocationManager');
-    listenChannel.bind('client-locationUpdate', function(data) {
-      onDataReceived(data);
-    });
-
+    listenChannel.bind('client-locationUpdate', onMessageReceived);
   } else if (connect === 'iframe') {
-    window.addEventListener('message', onDataReceived, false);
+    window.addEventListener('message', onMessageReceived, false);
   }
 
 
@@ -43,17 +40,16 @@ window.geolocationRemote = function(connect) {
     }
 
     if (connect === 'iframe') {
-      data = {data: data};
       parent.postMessage(data, window.location.origin + '/remote');
     }
   }
 
-  function onDataReceived(data) {
-    if (connect === 'iframe') {
-      data = data.data;
+  function onMessageReceived(message) {
+    if (!message.error && !message.position && !message.data) {
+      return;
     }
 
-    position = data.position;
+    var data = (message.data) ? message.data : message;
 
     errorCode = data.error || errorCode;
     errorCode = parseInt(errorCode, 10);
@@ -66,7 +62,8 @@ window.geolocationRemote = function(connect) {
 
     // let's update the watching webapp success callback
     // if we have position data and no error and no online value
-    if (position && errorCode < 0) {
+    if (data.position && errorCode < 0) {
+      position = data.position;
       updateWatchers();
     } else if (data.error) {
       onPositionError();

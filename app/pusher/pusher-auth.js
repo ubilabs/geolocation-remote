@@ -1,13 +1,8 @@
 var express = require('express'),
-  Pusher = require('pusher'),
+  Pusher = require('pusher'), // jshint ignore:line
   app = express(),
-  pusherConfig = {
-    appId: APP_ID,
-    key: KEY,
-    secret: secret
-  },
+  pusherConfig = require('./pusher-config'),
   pusher = new Pusher(pusherConfig);
-
 
 app.use(express.bodyParser());
 
