@@ -19,17 +19,17 @@ errorDiv = document.getElementById('error');
 onlineDiv = document.getElementById('online');
 
 window.testGetCurrentPosition = function() {
-  window.navigator.geolocation.getCurrentPosition(window.success, window.error);
+  window.fakenavigator.geolocation.getCurrentPosition(window.success, window.error);
 };
 
 window.testWatchPosition = function() {
   if (watchId !== '') {
-    window.navigator.geolocation.clearWatch(watchId);
+    window.fakenavigator.geolocation.clearWatch(watchId);
     console.log('webapp reset watchID: ' + watchId);
 
     watchId = '';
   } else {
-    watchId = window.navigator.geolocation.watchPosition(window.success, window.error);
+    watchId = window.fakenavigator.geolocation.watchPosition(window.success, window.error);
     console.log('webapp got watchID: ' + watchId);
   }
 };
@@ -52,7 +52,7 @@ window.updatePosition = function(position) {
  * check if online or not
  */
 setInterval(function() {
-  if (window.navigator.onLine) {
+  if (window.fakenavigator.onLine) {
     onlineDiv.innerHTML = 'online';
   } else {
     onlineDiv.innerHTML = 'offline';
@@ -109,7 +109,7 @@ if (watchButton) {
 //   }
 // }
 window.sendPois = function(data) {
-  window.navigator.geolocation.sendToRemote(data);
+  window.fakenavigator.geolocation.sendToRemote(data);
 };
 
 // add here what you need you app to do after the fake navigator is loaded
@@ -118,10 +118,10 @@ window.sendPois = function(data) {
 
 // app.init(); // maybe this one calls watchPosition()
 
-if (window.navigator.geolocation.sendToRemote) {
+if (window.fakenavigator.geolocation.sendToRemote) {
   // You may want to add your own initial center marker. do it here
   // You can set options too
-  window.navigator.geolocation.sendToRemote({
+  window.fakenavigator.geolocation.sendToRemote({
     position: {
       lat: 53.580973,
       lng: 10.0008938

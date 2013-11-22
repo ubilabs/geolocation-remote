@@ -67,7 +67,9 @@ remote.Controls = new Model({
   /**
    * Update the online status
    */
-  setOnline: function() {
+  setOnline: function(event) {
+    event.preventDefault();
+
     var isOnline = $(event.target).is(':checked');
 
     remote.onLine = isOnline;
