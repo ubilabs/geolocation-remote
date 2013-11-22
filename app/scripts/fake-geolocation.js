@@ -45,7 +45,11 @@ window.geolocationRemote = function(connect) {
   }
 
   function onMessageReceived(message) {
-    var data = message.data;
+    if (!message.error && !message.position && !message.data) {
+      return;
+    }
+
+    var data = (message.data) ? message.data : message;
 
     errorCode = data.error || errorCode;
     errorCode = parseInt(errorCode, 10);
