@@ -53,5 +53,3 @@ Developed at [Ubilabs](http://ubilabs.net).
 TODO:
 * resizeable iFrame
 * nicerer infoWindow
-
-[![Analytics](https://ga-beacon.appspot.com/UA-57649-14/geolocation-remote)](https://github.com/igrigorik/ga-beacon)
